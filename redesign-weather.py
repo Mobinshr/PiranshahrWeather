@@ -26,7 +26,30 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:7px 15px;pa
 @media(max-width:365px){.city-select{max-width:105px;font-size:.88rem}.hero{padding-inline:14px}.hero-temp{font-size:3.5rem}.hero-icon{font-size:4.35rem}.day-row{grid-template-columns:54px 22px minmax(30px,1fr) 56px;gap:4px;padding-inline:7px}.day-temps{font-size:.63rem}}
 @media(prefers-color-scheme:light){:root{color-scheme:light;--bg:#edf3fa;--panel:#fff;--panel2:#f4f7fb;--line:rgba(48,73,110,.13);--ink:#17263d;--muted:#6f819b;--shadow:0 12px 30px rgba(41,67,105,.08)}body{background:radial-gradient(ellipse at 50% -10%,rgba(89,140,205,.16),transparent 48%),#edf3fa;color:var(--ink)}header{background:rgba(255,255,255,.9);border-color:var(--line);box-shadow:0 10px 26px rgba(41,67,105,.08)}.city-select{color:#17263d}.city-select option{background:#fff;color:#17263d}.icon-btn{background:#f2f6fb;color:#344b68;border-color:var(--line)}.hero{background:radial-gradient(circle at 80% 30%,rgba(255,211,126,.34),transparent 28%),radial-gradient(circle at 7% 100%,rgba(80,166,231,.18),transparent 42%),linear-gradient(132deg,#e4effd,#d7e6f7 55%,#f8e9dc);border-color:var(--line);box-shadow:0 20px 45px rgba(41,67,105,.12)}.hero-temp,.hero-desc{color:#17263d}.hero-temp sup,.hero-feels{color:#536984}.hero-main:before{color:#405a79;background:rgba(255,255,255,.55);border-color:var(--line)}.stat,.chart-card,.daily-list,.hour-card,.sun-card{background:linear-gradient(145deg,#fff,#f8fafd);border-color:var(--line);box-shadow:0 8px 20px rgba(41,67,105,.055)}.stat-label{color:#6f819b}.stat-value{color:#17263d}.stat-value .unit{color:#71839c}.section-title{color:#243a57}.hour-card.now{background:#fff6e5;border-color:#e9bf70}.hour-time{color:#71839c}.hour-pop{color:#2587a6}.day-name{color:#243a57}.day-name small{color:#71839c}.day-bar{background:#e6edf6}.day-temps .max{color:#243a57}.sun-label{color:#71839c}.sun-time{color:#243a57}.notif-status{color:#246444;background:#e9f7ef;border-color:#c4e8d2}.banner-offline{color:#285d78;background:#eaf7fc;border-color:#c7e7f1}.banner-body span{color:#526b83}.banner-rain{color:#87512e;background:#fff4ec;border-color:#f2d2bd}.banner-rain .banner-body span{color:#80614e}.pull-indicator{background:#fff;color:#526984}.pull-spinner{border-color:#dce5f0;border-top-color:#bd842c}footer{border-color:var(--line);color:#71839c}footer b{color:#344b68}.inpage-notif{background:rgba(255,255,255,.98);border-color:var(--line);color:#17263d}.inpage-notif-body{color:#536984}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
-</style>"""
+
+/* Qandil / Huawei-inspired blue sky layout */
+:root{color-scheme:light;--bg:#398fd0;--ink:#fff;--muted:rgba(255,255,255,.75);--line:rgba(255,255,255,.22);--panel:rgba(255,255,255,.13);--panel2:rgba(255,255,255,.18)}
+html{background:#398fd0}body{background:radial-gradient(ellipse at 15% 15%,rgba(255,255,255,.2),transparent 24%),radial-gradient(ellipse at 82% 30%,rgba(220,241,255,.16),transparent 30%),linear-gradient(160deg,#327fbd,#4a9ed8 48%,#3889c8);background-attachment:fixed;color:#fff;padding-left:0;padding-right:0}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background:radial-gradient(circle at 25% 22%,#fff 0 1px,transparent 2px),radial-gradient(circle at 78% 44%,#fff 0 1px,transparent 2px);background-size:170px 180px,230px 210px}
+.app{max-width:650px;gap:0}header{padding:9px 17px 12px;background:transparent}.location-icon{display:none}.city-select{color:#fff;font-size:1.05rem}.city-select option{background:#398fd0;color:#fff}.location-info p{color:rgba(255,255,255,.76)}.icon-btn{border-radius:50%;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22);color:#fff}.notif-status,.banner{margin:0 14px 9px;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.24);color:#fff;backdrop-filter:blur(12px)}
+#content{gap:17px;display:flex;flex-direction:column}#content[hidden]{display:none!important}
+#content>:nth-child(1){order:1}#content>:nth-child(5){order:2}#content>:nth-child(6){order:3}#content>:nth-child(3){order:4}#content>:nth-child(4){order:5}#content>:nth-child(2){order:6}#content>:nth-child(7){order:7}
+.hero{min-height:285px;padding:24px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;background:transparent;border:0;border-radius:0;box-shadow:none}
+.hero:before{content:"";position:absolute;width:205px;height:205px;left:calc(50% - 102px);top:12px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.17),transparent 68%);z-index:-1}
+.hero-main{align-items:center;order:2;gap:7px}.hero-main:before{display:none}.hero-temp{font-size:clamp(5.6rem,24vw,7.5rem);font-weight:300;letter-spacing:-4px;line-height:1;color:#fff}.hero-temp sup{font-weight:300;font-size:1.35rem}.hero-desc{color:#fff;font-size:1.05rem}.hero-feels{color:rgba(255,255,255,.8);font-size:.83rem}
+.hero-icon{position:static;order:1;transform:none;font-size:2.7rem;opacity:.98;filter:drop-shadow(0 7px 12px rgba(0,50,90,.12))}
+.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 14px}.stat,.chart-card,.daily-list,.sun-card{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.23);border-radius:17px;box-shadow:0 8px 22px rgba(18,80,130,.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff}.stat{min-height:82px;padding:12px}.stat-label{color:rgba(255,255,255,.78)}.stat-label svg{color:#f4fbff}.stat-value,.stat-value .unit{color:#fff}
+.section{padding:0 14px;gap:9px}.section-title{color:#fff;font-size:.9rem}.section-title:before{background:rgba(255,255,255,.8)}.section-title:after{background:linear-gradient(90deg,rgba(255,255,255,.3),transparent)}
+.hourly-scroll{direction:rtl;gap:2px;padding:5px 2px 10px;scrollbar-width:none}.hourly-scroll::-webkit-scrollbar{display:none}.hour-card{flex:0 0 16%;min-width:57px;max-width:82px;padding:11px 5px;border:0;border-left:1px solid rgba(255,255,255,.17);border-radius:0;background:transparent;color:#fff;box-shadow:none}.hour-card:last-child{border-left:0}.hour-card.now{background:rgba(255,255,255,.15);border-radius:12px}.hour-time{color:rgba(255,255,255,.76)}.hour-pop{color:#e3f7ff}
+.day-row{grid-template-columns:60px 27px minmax(30px,1fr) 62px;gap:5px;padding:12px 9px;border-color:rgba(255,255,255,.15)}.day-name,.day-temps .max{color:#fff}.day-name small,.day-temps .min,.day-bar-wrap{color:rgba(255,255,255,.76)}.day-bar{background:rgba(255,255,255,.2)}.day-bar-fill{background:linear-gradient(90deg,#bcecff,#ffe58f,#ffc18e)}
+.sun-row{margin:0 14px;gap:8px}.sun-card{padding:13px 11px}.sun-label{color:rgba(255,255,255,.76)}.sun-time{color:#fff}
+.chart-wrap{height:165px}.chart-wrap.precip{height:135px}.chart-tooltip{background:#f4fbff;color:#28628d}
+footer{margin:3px 14px 0;color:rgba(255,255,255,.72);border-color:rgba(255,255,255,.22)}footer b{color:#fff}
+#error{margin:12px 14px;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.25);color:#fff}.btn-retry{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)}
+.toast{background:rgba(35,111,172,.96);color:#fff}.inpage-notif{background:rgba(43,119,178,.97);border-color:rgba(255,255,255,.28);color:#fff}.inpage-notif-body{color:rgba(255,255,255,.84)}
+@media(max-width:390px){.hero{min-height:270px}.hero-temp{font-size:5.7rem}.day-row{grid-template-columns:54px 23px minmax(26px,1fr) 56px;gap:4px;padding:11px 7px}.day-name{font-size:.67rem}.day-temps{font-size:.65rem}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+\n</style>"""
 
 body = r"""<body>
 <div id="pullIndicator" class="pull-indicator"><span class="pull-spinner"></span><span id="pullText">برای به‌روزرسانی بکشید</span></div>
@@ -35,7 +58,7 @@ body = r"""<body>
 <div id="rainAlert" class="banner banner-rain" hidden><span class="banner-icon">🌧️</span><div class="banner-body"><b>هشدار بارش</b><span id="rainMsg"></span></div><button class="banner-close" id="rainClose" aria-label="بستن">×</button></div>
 <div id="offlineBanner" class="banner banner-offline" hidden><span class="banner-icon">📡</span><div class="banner-body"><b>حالت آفلاین</b><span id="offlineMsg">آخرین داده ذخیره‌شده نمایش داده می‌شود.</span></div></div>
 <header>
-<div class="location"><div class="location-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="location-info"><select id="citySelect" class="city-select" aria-label="انتخاب شهر"><option value="piranshahr">پیرانشهر</option><option value="urmia">ارومیه</option><option value="mahabad">مهاباد</option><option value="sardasht">سردشت</option><option value="bukan">بوکان</option><option value="tabriz">تبریز</option><option value="tehran">تهران</option></select><p id="cityRegion">آذربایجان غربی، ایران</p></div></div>
+<div class="location"><div class="location-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="location-info"><select id="citySelect" class="city-select" aria-label="انتخاب شهر"><option value="piranshahr">پیرانشهر</option><option value="urmia">ارومیه</option><option value="mahabad">مهاباد</option><option value="sardasht">سردشت</option><option value="bukan">بوکان</option><option value="tabriz">تبریز</option><option value="tehran">تهران</option></select><p id="cityRegion">آب‌وهوای قندیل</p></div></div>
 <div class="actions">
 <button id="installBtn" class="icon-btn install-btn" aria-label="نصب اپ" title="نصب به‌عنوان اپ" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
 <button id="notifBtn" class="icon-btn notif-btn" aria-label="اعلان بارش" title="فعال‌سازی اعلان بارش"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
@@ -63,6 +86,27 @@ missing = sorted(needed - ids)
 if missing:
     raise SystemExit("Redesign omitted required DOM IDs: " + ", ".join(missing))
 
-html = '<!DOCTYPE html>\n<html lang="fa" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n<meta name="theme-color" content="#0b1628">\n<title>آب و هوای پیرانشهر</title>\n' + css + '\n</head>\n' + body + '\n' + app_script + '\n</body>\n</html>\n'
+html = '<!DOCTYPE html>\n<html lang="fa" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n<meta name="theme-color" content="#0b1628">\n<title>آب و هوای قندیل</title>\n' + css + '\n</head>\n' + body + '\n' + app_script + '\n</body>\n</html>\n'
+
+# Rename the Android launcher label while preserving the application ID and signing identity.
+values_dir = Path("app/src/main/res/values")
+values_dir.mkdir(parents=True, exist_ok=True)
+strings_file = values_dir / "strings.xml"
+if strings_file.exists():
+    strings = strings_file.read_text(encoding="utf-8")
+    if re.search(r'<string\s+name=["\']app_name["\']', strings):
+        strings = re.sub(r'(<string\s+name=["\']app_name["\'][^>]*>)[\s\S]*?(</string>)', r'\1آب و هوای قندیل\2', strings, count=1)
+    else:
+        strings = strings.replace("</resources>", '    <string name="app_name">آب و هوای قندیل</string>\n</resources>')
+    strings_file.write_text(strings, encoding="utf-8")
+manifest = Path("app/src/main/AndroidManifest.xml")
+if manifest.exists():
+    manifest_text = manifest.read_text(encoding="utf-8")
+    if re.search(r'android:label\s*=', manifest_text):
+        manifest_text = re.sub(r'android:label\s*=\s*["\'][^"\']*["\']', 'android:label="@string/app_name"', manifest_text, count=1)
+    else:
+        manifest_text = re.sub(r'(<application\b)', r'\1 android:label="@string/app_name"', manifest_text, count=1)
+    manifest.write_text(manifest_text, encoding="utf-8")
+
 page.write_text(html, encoding="utf-8")
 print(f"Rebuilt weather.html with {len(ids)} preserved DOM IDs and original application JavaScript.")
