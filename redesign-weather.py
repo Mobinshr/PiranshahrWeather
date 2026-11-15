@@ -108,5 +108,19 @@ if manifest.exists():
         manifest_text = re.sub(r'(<application\b)', r'\1 android:label="@string/app_name"', manifest_text, count=1)
     manifest.write_text(manifest_text, encoding="utf-8")
 
+
+# Install the custom Qandil winter icon for Android launchers.
+icon_source = Path("../qandil_icon.jpg")
+if not icon_source.is_file():
+    raise SystemExit("Qandil launcher icon asset is missing")
+icon_dir = Path("app/src/main/res/mipmap-nodpi")
+icon_dir.mkdir(parents=True, exist_ok=True)
+(icon_dir / "ic_launcher.jpg").write_bytes(icon_source.read_bytes())
+manifest = Path("app/src/main/AndroidManifest.xml")
+manifest_text = manifest.read_text(encoding="utf-8")
+manifest_text = re.sub(r'android:icon\\s*=\\s*["\\'][^"\\']*["\\']', 'android:icon="@mipmap/ic_launcher"', manifest_text, count=1)
+manifest_text = re.sub(r'android:roundIcon\\s*=\\s*["\\'][^"\\']*["\\']', 'android:roundIcon="@mipmap/ic_launcher"', manifest_text, count=1)
+manifest.write_text(manifest_text, encoding="utf-8")
+
 page.write_text(html, encoding="utf-8")
 print(f"Rebuilt weather.html with {len(ids)} preserved DOM IDs and original application JavaScript.")
