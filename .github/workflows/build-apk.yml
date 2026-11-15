@@ -43,6 +43,21 @@ jobs:
           print(f"Configured {gradle_file}: versionCode=2, versionName=1.0.0")
           PY
 
+      - name: Read Android app version
+        id: app_version
+        working-directory: piranshahr-weather-android
+        shell: bash
+        run: |
+          GRADLE_FILE=$(find app -maxdepth 1 -type f \( -name 'build.gradle.kts' -o -name 'build.gradle' \) | head -n1)
+          VERSION_NAME=$(sed -nE "s/.*versionName[[:space:]]*=?[[:space:]]*['\"]([^'\"]+)['\"].*/\1/p" "$GRADLE_FILE" | head -n1)
+          if [ -z "$VERSION_NAME" ]; then
+            echo "Could not read versionName from $GRADLE_FILE"
+            exit 1
+          fi
+          echo "name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "Building Piranshahr Weather v$VERSION_NAME"
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -68,14 +83,20 @@ jobs:
           path: piranshahr-weather-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
-      - name: Publish APK to GitHub Releases
+      - name: Publish versioned APK release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: build-${{ github.run_number }}-${{ github.run_attempt }}
-          name: Piranshahr Weather - Latest APK
+          tag_name: ${{ steps.app_version.outputs.tag }}
+          name: Piranshahr Weather v${{ steps.app_version.outputs.name }}
           body: |
-            Latest automatically built APK for Piranshahr Weather.
-            Download app-debug.apk and install it on your Android device.
+            ## Piranshahr Weather v${{ steps.app_version.outputs.name }}
+
+            Latest Android APK for Piranshahr Weather.
+
+            - **Version:** ${{ steps.app_version.outputs.name }}
+            - **File:** app-debug.apk
+
+            Each release tag represents the app version. Rebuilding the same version updates this release instead of creating another numbered build.
           files: piranshahr-weather-android/app/build/outputs/apk/debug/app-debug.apk
           make_latest: true
           fail_on_unmatched_files: true
@@ -83,10 +104,10 @@ jobs:
       - name: Keep only the latest release
         env:
           GH_TOKEN: ${{ github.token }}
+          CURRENT_TAG: ${{ steps.app_version.outputs.tag }}
         run: |
-          current_tag="build-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
           while IFS= read -r tag; do
-            if [ -n "$tag" ] && [ "$tag" != "$current_tag" ]; then
+            if [ -n "$tag" ] && [ "$tag" != "$CURRENT_TAG" ]; then
               gh release delete "$tag" --yes --cleanup-tag
             fi
           done < <(gh release list --limit 100 --json tagName --jq '.[].tagName')
