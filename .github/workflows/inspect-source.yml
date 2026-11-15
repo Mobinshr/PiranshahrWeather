@@ -1,0 +1,31 @@
+name: Inspect Qandil source archive
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/inspect-source.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract project and create inspectable source artifact
+        run: |
+          unzip -q PiranshahrWeather-GitHub.zip -d extracted
+          test -d extracted/piranshahr-weather-android
+          find extracted/piranshahr-weather-android -maxdepth 5 -type f | sort > source-manifest.txt
+          cat source-manifest.txt >> "$GITHUB_STEP_SUMMARY"
+          zip -qr qandil-source-inspection.zip extracted/piranshahr-weather-android
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qandil-source-inspection
+          path: |
+            qandil-source-inspection.zip
+            source-manifest.txt
+          if-no-files-found: error
