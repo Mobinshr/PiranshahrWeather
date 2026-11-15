@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - 'PiranshahrWeather-GitHub.zip'
+      - '.github/workflows/build-apk.yml'
   workflow_dispatch:
 
 permissions:
