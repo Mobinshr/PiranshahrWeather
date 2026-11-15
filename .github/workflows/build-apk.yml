@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - 'PiranshahrWeather-GitHub.zip'
+      - 'redesign-weather.py'
       - '.github/workflows/build-apk.yml'
   workflow_dispatch:
 
@@ -24,124 +25,9 @@ jobs:
           test -f piranshahr-weather-android/settings.gradle.kts
           test -f piranshahr-weather-android/app/src/main/AndroidManifest.xml
 
-      - name: Apply Material 3 weather interface
+      - name: Apply complete modern weather redesign
         working-directory: piranshahr-weather-android
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          page = Path("app/src/main/assets/weather.html")
-          html = page.read_text(encoding="utf-8")
-          marker = "</style>"
-          if html.count(marker) != 1:
-              raise SystemExit("Expected exactly one style closing tag in weather.html")
-
-          css = r"""\n          /* Piranshahr Weather — visual redesign 1.0.3 */
-          :root {
-            color-scheme: dark;
-            --bg:#0b1424; --surface:#142238; --surface-2:#1d304b;
-            --border:rgba(164,190,226,.15); --text:#f3f7ff; --muted:#a0b2cc;
-            --accent:#ffd071; --accent-2:#ff986b; --success:#78d9a0; --info:#79c6ff;
-            --radius:24px; --radius-sm:18px;
-          }
-          html { background:var(--bg); }
-          body {
-            background:radial-gradient(ellipse at 50% -12%,rgba(83,132,205,.24),transparent 48%),radial-gradient(ellipse at 100% 42%,rgba(255,166,91,.07),transparent 34%),var(--bg);
-            padding:22px 16px 42px;padding-top:max(22px,env(safe-area-inset-top));
-          }
-          .app { max-width:760px; gap:22px; }
-          header { padding:10px 12px;border:1px solid var(--border);border-radius:22px;background:rgba(20,34,56,.84);box-shadow:0 10px 30px rgba(0,0,0,.18);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px); }
-          .location { gap:12px; }
-          .location-icon { width:46px;height:46px;border-radius:16px;color:#1d2b40;background:linear-gradient(145deg,#ffe5a8,#ffad68);box-shadow:0 7px 20px rgba(255,184,91,.2); }
-          .city-select { font-size:1.32rem;font-weight:800; }
-          .location p { font-size:.75rem; }
-          .actions { gap:7px; }
-          .icon-btn { width:42px;height:42px;border-radius:15px;background:var(--surface-2);border:1px solid var(--border);color:var(--text); }
-          .icon-btn:hover { background:#263d5d;border-color:rgba(255,208,113,.4); }
-          .install-btn { color:var(--success);background:rgba(120,217,160,.1); }
-          .notif-btn.active { color:var(--accent);background:rgba(255,208,113,.12); }
-          .hero {
-            min-height:246px;padding:34px 32px 28px;grid-template-columns:1fr auto;gap:18px;
-            border:1px solid rgba(255,255,255,.12);border-radius:30px;
-            background:radial-gradient(circle at 82% 48%,rgba(255,194,103,.22),transparent 32%),radial-gradient(circle at 8% 100%,rgba(80,151,231,.23),transparent 48%),linear-gradient(125deg,#203958 0%,#192b45 50%,#2b3852 100%);
-            box-shadow:0 22px 52px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.08);
-          }
-          .hero::before { content:"وضعیت فعلی";position:absolute;top:18px;right:22px;padding:6px 11px;border-radius:30px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:#e0ebfb;font-size:.72rem;font-weight:700; }
-          .hero::after { content:"";position:absolute;width:190px;height:190px;left:-55px;bottom:-105px;border-radius:50%;border:1px solid rgba(255,255,255,.08);box-shadow:0 0 0 22px rgba(255,255,255,.025),0 0 0 48px rgba(255,255,255,.018);pointer-events:none; }
-          .hero-main { position:relative;z-index:1;gap:7px;padding-top:17px; }
-          .hero-temp { font-size:clamp(4rem,15vw,5.5rem);font-weight:850;letter-spacing:-3px;color:#fff; }
-          .hero-temp sup { color:#c7d5e9;font-size:1.35rem; }
-          .hero-desc { color:#fff;font-size:1.12rem;font-weight:750;margin-top:5px; }
-          .hero-feels { color:#c3d1e5;font-size:.84rem; }
-          .hero-icon { position:relative;z-index:1;font-size:clamp(5rem,19vw,7.2rem);filter:drop-shadow(0 14px 22px rgba(0,0,0,.36)); }
-          .stats { grid-template-columns:repeat(3,minmax(0,1fr));gap:11px; }
-          .stat { min-height:98px;padding:15px 16px;border-radius:20px;background:linear-gradient(150deg,#192b45,#132138);border:1px solid var(--border);box-shadow:0 8px 22px rgba(0,0,0,.14); }
-          .stat:hover { transform:translateY(-2px);background:#203653; }
-          .stat-label { font-size:.74rem;color:#afc0d8; }
-          .stat-value { font-size:1.2rem;color:#f4f7ff; }
-          .stat-value .unit { color:#a0b2cc; }
-          .section { gap:12px; }
-          .section-title { color:#edf3ff;font-size:1rem;font-weight:800;padding:0 3px;gap:10px; }
-          .section-title::before { width:5px;height:19px;border-radius:8px;background:linear-gradient(180deg,#ffd071,#ff986b); }
-          .chart-card { padding:18px 15px 14px;border-radius:23px;background:linear-gradient(155deg,#192b45,#121f33);border:1px solid var(--border);box-shadow:0 10px 26px rgba(0,0,0,.15); }
-          .chart-wrap { height:218px; }.chart-wrap.precip { height:156px; }
-          .hourly-scroll { gap:9px;padding:4px 2px 13px; }
-          .hour-card { min-width:76px;padding:13px 9px;border-radius:19px;background:linear-gradient(160deg,#1b2e49,#142238);border:1px solid var(--border);gap:8px; }
-          .hour-card.now { background:linear-gradient(160deg,rgba(255,208,113,.2),rgba(255,208,113,.06));border:1px solid rgba(255,208,113,.65);box-shadow:0 7px 20px rgba(255,190,80,.1); }
-          .hour-time { font-size:.73rem; }.hour-icon { font-size:1.7rem; }.hour-temp { font-size:1rem; }
-          .daily-list { border-radius:23px;background:linear-gradient(155deg,#192b45,#121f33);border:1px solid var(--border);box-shadow:0 10px 26px rgba(0,0,0,.15); }
-          .day-row { grid-template-columns:76px 34px minmax(70px,1fr) 82px;gap:10px;padding:16px 15px;border-color:rgba(164,190,226,.12); }
-          .day-row:hover { transform:none;background:rgba(255,255,255,.035); }
-          .day-name { font-size:.84rem;color:#edf3ff; }.day-name small { color:#a0b2cc; }.day-icon { font-size:1.5rem; }
-          .day-bar { height:7px;background:#2a3d59; }.day-bar-fill { background:linear-gradient(90deg,#72c2ff,#ffd071,#ff986b); }.day-temps { font-size:.82rem; }
-          .sun-row { gap:11px; }
-          .sun-card { padding:17px;border-radius:20px;background:linear-gradient(145deg,#1b2e49,#142238);border:1px solid var(--border); }
-          .sun-card .sun-icon { font-size:1.9rem; }.sun-card .sun-label { color:#a0b2cc; }.sun-card .sun-time { color:#f3f7ff;font-size:1.08rem; }
-          .banner,.notif-status,.error-card { border-radius:18px; }.notif-status { background:rgba(120,217,160,.09);border-color:rgba(120,217,160,.24); }
-          footer { padding:15px 5px 4px;border-top:1px solid var(--border);font-size:.73rem;line-height:1.8; }
-          .toast { border-radius:16px; }
-          button,select,.hour-card { -webkit-tap-highlight-color:transparent; }
-          button:focus-visible,select:focus-visible,.hour-card:focus-visible { outline:2px solid var(--accent);outline-offset:3px; }
-          @media (prefers-color-scheme: light) {
-           :root { color-scheme:light;--bg:#eef3fa;--surface:#fff;--surface-2:#e8eef7;--border:rgba(54,78,115,.14);--text:#17243a;--muted:#64758f;--accent:#a56a08;--accent-2:#c36b35;--success:#23794c;--info:#2777ac; }
-           body { background:radial-gradient(ellipse at 50% -12%,rgba(83,129,196,.16),transparent 48%),var(--bg); }
-           header { background:rgba(255,255,255,.88);box-shadow:0 10px 28px rgba(48,70,105,.08); }
-           .location-icon { color:#49310b; }.icon-btn { background:#edf2f9;color:#263751; }.icon-btn:hover { background:#e1e9f4; }
-           .hero { background:radial-gradient(circle at 82% 48%,rgba(255,196,101,.3),transparent 32%),radial-gradient(circle at 8% 100%,rgba(80,151,231,.18),transparent 48%),linear-gradient(125deg,#e2edfc 0%,#d7e5f8 52%,#f8e9d6 100%);border-color:rgba(73,100,143,.13);box-shadow:0 20px 48px rgba(48,70,105,.12); }
-           .hero-temp,.hero-desc { color:#17243a; }.hero-temp sup,.hero-feels { color:#526783; }
-           .hero::before { color:#314968;background:rgba(255,255,255,.55);border-color:rgba(73,100,143,.12); }
-           .stat,.chart-card,.daily-list,.hour-card,.sun-card { background:#fff;border-color:rgba(54,78,115,.13);box-shadow:0 7px 22px rgba(48,70,105,.06); }
-           .stat-label,.day-name small,.sun-card .sun-label { color:#64758f; }.stat-value,.day-name,.sun-card .sun-time { color:#17243a; }.stat-value .unit { color:#64758f; }
-           .section-title { color:#243650; }.hour-card.now { background:#fff6e5;border-color:#e8bd66; }.day-bar { background:#e8eef7; }
-           .notif-status { color:#1d392b;background:#e8f6ed;border-color:#c7e8d3; }.notif-status-hint { background:#f3f8f4;border-color:#c7e8d3; }
-           footer { border-color:rgba(54,78,115,.13); }
-          }
-          @media (max-width:640px) {
-           body { padding:14px 12px 30px;padding-top:max(14px,env(safe-area-inset-top)); }.app { gap:17px; }
-           header { padding:9px 10px;border-radius:19px; }.location-icon { width:42px;height:42px;border-radius:14px; }
-           .city-select { font-size:1.12rem;max-width:128px; }.location p { font-size:.68rem; }.actions { gap:5px; }
-           .icon-btn { width:37px;height:37px;border-radius:13px; }.icon-btn svg { width:17px;height:17px; }
-           .hero { min-height:205px;padding:27px 20px 22px;border-radius:25px; }.hero::before { top:13px;right:15px;font-size:.66rem;padding:5px 9px; }
-           .hero-main { padding-top:15px; }.hero-temp { font-size:3.8rem; }.hero-icon { font-size:4.8rem; }
-           .stats { grid-template-columns:repeat(2,minmax(0,1fr));gap:9px; }.stat { min-height:88px;padding:13px;border-radius:17px; }.stat-value { font-size:1.08rem; }
-           .section-title { font-size:.92rem; }.chart-card { padding:14px 10px 10px;border-radius:19px; }.chart-wrap { height:195px; }.chart-wrap.precip { height:140px; }
-           .hour-card { min-width:70px;padding:12px 8px;border-radius:16px; }
-           .day-row { grid-template-columns:62px 27px minmax(45px,1fr) 70px;gap:7px;padding:13px 10px; }
-           .day-name { font-size:.77rem; }.day-name small { font-size:.64rem; }.day-icon { font-size:1.28rem; }.day-bar-wrap { gap:5px;font-size:.67rem; }
-           .day-temps { gap:4px;font-size:.75rem; }.sun-card { padding:14px 12px;gap:9px;border-radius:17px; }
-           .sun-card .sun-icon { font-size:1.55rem; }.sun-card .sun-time { font-size:.96rem; }.footer { gap:4px 12px;font-size:.68rem; }
-          }
-          @media (max-width:360px) {
-           .city-select { max-width:108px;font-size:1.03rem; }.hero-temp { font-size:3.35rem; }.hero-icon { font-size:4.1rem; }
-           .day-row { grid-template-columns:56px 24px minmax(38px,1fr) 64px;gap:5px;padding-inline:8px; }
-          }
-          @media (prefers-reduced-motion:reduce) {
-           *,*::before,*::after { animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important; }
-          }\n          """
-          html = html.replace(marker, css + "\n" + marker, 1)
-          page.write_text(html, encoding="utf-8")
-          print("Applied the redesigned weather interface; weather logic is unchanged.")
-          PY
+        run: python3 ../redesign-weather.py
 
       - name: Set Android app version
         working-directory: piranshahr-weather-android
@@ -154,12 +40,12 @@ jobs:
           if gradle_file is None:
               raise SystemExit("App module Gradle file not found")
           content = gradle_file.read_text()
-          content, code_count = re.subn(r"(?m)(\bversionCode\s*(?:=\s*)?)\d+", r'\g<1>5', content, count=1)
-          content, name_count = re.subn(r"""(?m)(\bversionName\s*(?:=\s*)?)["'][^"']*["']""", r'\g<1>"1.0.3"', content, count=1)
+          content, code_count = re.subn(r"(?m)(\bversionCode\s*(?:=\s*)?)\d+", r'\g<1>6', content, count=1)
+          content, name_count = re.subn(r"""(?m)(\bversionName\s*(?:=\s*)?)["'][^"']*["']""", r'\g<1>"1.1.0"', content, count=1)
           if code_count != 1 or name_count != 1:
               raise SystemExit(f"Could not safely update version fields in {gradle_file}")
           gradle_file.write_text(content)
-          print(f"Configured {gradle_file}: versionCode=5, versionName=1.0.3")
+          print(f"Configured {gradle_file}: versionCode=6, versionName=1.1.0")
           PY
 
       - name: Configure permanent release signing
