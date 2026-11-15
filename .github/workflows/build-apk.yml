@@ -24,12 +24,168 @@ jobs:
           test -f piranshahr-weather-android/settings.gradle.kts
           test -f piranshahr-weather-android/app/src/main/AndroidManifest.xml
 
-      - name: Inspect current weather UI source
+      - name: Apply Material 3 weather interface
         working-directory: piranshahr-weather-android
         run: |
-          echo "===== WEATHER HTML SOURCE BEGIN ====="
-          cat app/src/main/assets/weather.html
-          echo "===== WEATHER HTML SOURCE END ====="
+          python3 - <<'PY'
+          from pathlib import Path
+
+          page = Path("app/src/main/assets/weather.html")
+          html = page.read_text(encoding="utf-8")
+          marker = "</style>"
+          if html.count(marker) != 1:
+              raise SystemExit("Expected exactly one style closing tag in weather.html")
+
+          css = r"""
+          /* Material 3 visual refresh — presentation only; weather logic is unchanged. */
+          :root {
+              color-scheme: dark;
+              --bg: #0e1422;
+              --surface: #171f30;
+              --surface-2: #222d42;
+              --border: #354158;
+              --text: #edf1f8;
+              --muted: #a4b0c4;
+              --accent: #f4c66a;
+              --accent-2: #f3a36f;
+              --success: #82d6a0;
+              --info: #8bc8f5;
+              --radius: 24px;
+              --radius-sm: 17px;
+          }
+
+          body {
+              background:
+                  radial-gradient(ellipse at 50% -15%, rgba(103, 129, 190, .20), transparent 55%),
+                  var(--bg);
+              color: var(--text);
+              padding-left: max(16px, env(safe-area-inset-left));
+              padding-right: max(16px, env(safe-area-inset-right));
+          }
+          .app { gap: 18px; }
+          header { padding: 4px 2px 8px; }
+          .location-icon {
+              width: 46px; height: 46px; border-radius: 16px;
+              background: #3b465e; color: #f4c66a;
+          }
+          .city-select { font-size: 1.35rem; font-weight: 750; }
+          .icon-btn {
+              width: 46px; height: 46px; border-radius: 16px;
+              background: var(--surface-2); border-color: transparent;
+              box-shadow: 0 1px 2px rgba(0,0,0,.12);
+          }
+          .icon-btn:hover { background: #303c54; border-color: transparent; }
+          .install-btn { color: #a4e4b8; background: rgba(130,214,160,.12); }
+          .notif-btn.active { color: var(--accent); background: rgba(244,198,106,.14); }
+          .card, .chart-card, .daily-list, .stat, .hour-card, .sun-card {
+              border-color: rgba(164,176,196,.16);
+              box-shadow: 0 2px 8px rgba(0,0,0,.12);
+          }
+          .hero {
+              border-radius: 30px;
+              padding: 30px;
+              background:
+                  radial-gradient(circle at 12% 18%, rgba(244,198,106,.16), transparent 48%),
+                  radial-gradient(circle at 90% 88%, rgba(139,200,245,.12), transparent 52%),
+                  var(--surface);
+              box-shadow: 0 8px 24px rgba(0,0,0,.20);
+          }
+          .hero:hover { border-color: rgba(244,198,106,.28); box-shadow: 0 10px 28px rgba(0,0,0,.24); }
+          .hero-temp { font-size: clamp(3.4rem, 13vw, 4.5rem); letter-spacing: -2px; }
+          .hero-desc { font-size: 1.08rem; }
+          .stat { border-radius: 20px; background: var(--surface); padding: 16px; }
+          .stat-label { font-size: .78rem; }
+          .stat-value { font-size: 1.2rem; }
+          .section-title { color: var(--text); font-size: .98rem; font-weight: 700; }
+          .section-title::before { width: 4px; height: 16px; border-radius: 8px; }
+          .chart-card { border-radius: 22px; padding: 18px; background: var(--surface); }
+          .hour-card {
+              min-width: 82px; border-radius: 18px; background: var(--surface);
+              padding: 14px 10px;
+          }
+          .hour-card.now { background: rgba(244,198,106,.10); border-color: var(--accent); }
+          .daily-list { border-radius: 22px; background: var(--surface); }
+          .day-row { padding-top: 16px; padding-bottom: 16px; }
+          .day-row:hover { transform: none; }
+          .sun-card { border-radius: 20px; background: var(--surface); padding: 18px; }
+          .banner, .notif-status, .error-card { border-radius: 18px; }
+          .btn-retry { min-height: 46px; border-radius: 16px; padding: 11px 24px; }
+          footer {
+              padding: 12px 4px 4px;
+              border-top: 1px solid rgba(164,176,196,.14);
+              color: var(--muted);
+              font-size: .74rem;
+          }
+          button, select, .hour-card { -webkit-tap-highlight-color: transparent; }
+          button:focus-visible, select:focus-visible, .hour-card:focus-visible {
+              outline: 2px solid var(--accent); outline-offset: 3px;
+          }
+
+          @media (prefers-color-scheme: light) {
+              :root {
+                  color-scheme: light;
+                  --bg: #f5f6fa;
+                  --surface: #ffffff;
+                  --surface-2: #edf0f6;
+                  --border: #dce2ec;
+                  --text: #1b2433;
+                  --muted: #647188;
+                  --accent: #8a5b00;
+                  --accent-2: #b65b25;
+                  --success: #237747;
+                  --info: #236b9b;
+              }
+              body {
+                  background:
+                      radial-gradient(ellipse at 50% -15%, rgba(105,133,190,.12), transparent 58%),
+                      var(--bg);
+              }
+              .location-icon { background: #e8eaf4; color: #765000; }
+              .icon-btn { background: #eef1f7; color: #26334a; }
+              .icon-btn:hover { background: #e1e7f1; }
+              .install-btn { color: #237747; background: #e8f5ec; }
+              .notif-btn.active { color: #805400; background: #fff3d8; }
+              .hero {
+                  background:
+                      radial-gradient(circle at 12% 18%, rgba(244,198,106,.20), transparent 48%),
+                      radial-gradient(circle at 90% 88%, rgba(94,151,205,.10), transparent 52%),
+                      var(--surface);
+                  box-shadow: 0 8px 24px rgba(32,48,76,.08);
+              }
+              .card, .chart-card, .daily-list, .stat, .hour-card, .sun-card {
+                  border-color: rgba(80,96,125,.16);
+                  box-shadow: 0 2px 8px rgba(32,48,76,.05);
+              }
+              .hour-card.now { background: #fff6e4; }
+              .day-bar { background: #e9edf4; }
+              .chart-tooltip { background: #26334a; }
+              .notif-status { color: #1b2433; background: #eaf6ee; border-color: #c7e6d1; }
+              .notif-status.alert { background: #fff2e8; border-color: #f0c7a9; }
+              footer { border-color: #dce2ec; }
+          }
+
+          @media (max-width: 640px) {
+              body { padding-left: 12px; padding-right: 12px; }
+              .app { gap: 15px; }
+              .hero { border-radius: 26px; padding: 22px; }
+              .icon-btn { width: 42px; height: 42px; border-radius: 14px; }
+              .stat { border-radius: 18px; }
+              .chart-card { border-radius: 20px; }
+          }
+          @media (prefers-reduced-motion: reduce) {
+              *, *::before, *::after {
+                  animation-duration: .01ms !important;
+                  animation-iteration-count: 1 !important;
+                  scroll-behavior: auto !important;
+                  transition-duration: .01ms !important;
+              }
+          }
+          """
+
+          html = html.replace(marker, css + "\\n" + marker, 1)
+          page.write_text(html, encoding="utf-8")
+          print("Applied Material 3 visual refinements without changing weather logic.")
+          PY
 
       - name: Set Android app version
         working-directory: piranshahr-weather-android
