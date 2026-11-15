@@ -24,6 +24,25 @@ jobs:
           test -f piranshahr-weather-android/settings.gradle.kts
           test -f piranshahr-weather-android/app/src/main/AndroidManifest.xml
 
+      - name: Set Android app version
+        working-directory: piranshahr-weather-android
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          candidates = [Path("app/build.gradle.kts"), Path("app/build.gradle")]
+          gradle_file = next((p for p in candidates if p.is_file()), None)
+          if gradle_file is None:
+              raise SystemExit("App module Gradle file not found")
+          content = gradle_file.read_text()
+          content, code_count = re.subn(r'(?m)(\\bversionCode\\s*(?:=\\s*)?)\\d+', r'\\g<1>2', content, count=1)
+          content, name_count = re.subn(r'(?m)(\\bversionName\\s*(?:=\\s*)?)[\\\'"][^\\\'"]*[\\\'"]', r'\\g<1>"1.0.0"', content, count=1)
+          if code_count != 1 or name_count != 1:
+              raise SystemExit(f"Could not safely update version fields in {gradle_file}")
+          gradle_file.write_text(content)
+          print(f"Configured {gradle_file}: versionCode=2, versionName=1.0.0")
+          PY
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
