@@ -283,6 +283,15 @@ jobs:
         with:
           gradle-version: '8.6'
 
+      - name: Remove obsolete debug APK from this version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURRENT_TAG: ${{ steps.app_version.outputs.tag }}
+        run: |
+          if gh release view "$CURRENT_TAG" >/dev/null 2>&1; then
+            gh release delete-asset "$CURRENT_TAG" app-debug.apk --yes || true
+          fi
+
       - name: Prepare permanent signing key
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
