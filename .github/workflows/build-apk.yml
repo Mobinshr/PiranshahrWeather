@@ -32,6 +32,11 @@ jobs:
         with:
           gradle-version: '8.6'
 
+      - name: Fix notification launcher resource reference
+        working-directory: piranshahr-weather-android
+        run: |
+          sed -i 's/R\.mipmap\.ic_launcher/R.drawable.ic_launcher/g' app/src/main/java/com/example/weather/NotificationHelper.kt
+
       - name: Build APK
         working-directory: piranshahr-weather-android
         run: gradle assembleDebug
