@@ -24,6 +24,13 @@ jobs:
           test -f piranshahr-weather-android/settings.gradle.kts
           test -f piranshahr-weather-android/app/src/main/AndroidManifest.xml
 
+      - name: Inspect current weather UI source
+        working-directory: piranshahr-weather-android
+        run: |
+          echo "===== WEATHER HTML SOURCE BEGIN ====="
+          cat app/src/main/assets/weather.html
+          echo "===== WEATHER HTML SOURCE END ====="
+
       - name: Set Android app version
         working-directory: piranshahr-weather-android
         run: |
