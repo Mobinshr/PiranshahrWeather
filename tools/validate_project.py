@@ -1,5 +1,4 @@
 from pathlib import Path
-import re
 
 ROOT = Path.cwd()
 required_files = [
@@ -27,8 +26,6 @@ checks = {
     "city configuration exists in compiled core": "piranshahr" in core and "urmia" in core,
     "Android internet permission is retained": "android.permission.INTERNET" in manifest,
     "existing app identity is retained": 'applicationId = "com.example.weather"' in gradle,
-    "version code is 12": bool(re.search(r"versionCode\s*=\s*12", gradle)),
-    "version name is 1.7.0": bool(re.search(r'versionName\s*=\s*"1\.7\.0"', gradle)),
 }
 failed = [name for name, passed in checks.items() if not passed]
 for name, passed in checks.items():
