@@ -302,8 +302,7 @@ jobs:
                   transition-duration:.01ms!important;scroll-behavior:auto!important;
               }
           }
-          """""
-
+          """
           html = html.replace(marker, css + "\n" + marker, 1)
           page.write_text(html, encoding="utf-8")
           print("Applied the redesigned weather interface; weather logic is unchanged.")
