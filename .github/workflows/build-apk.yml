@@ -1,4 +1,4 @@
-name: Build Qandil Weather APK v1.6.0
+name: Build Qandil Weather APK v1.7.0
 on:
   push:
     branches:
@@ -7,6 +7,10 @@ on:
       - 'PiranshahrWeather-GitHub.zip'
       - 'redesign-weather.py'
       - '.github/workflows/build-apk.yml'
+      - 'package.json'
+      - 'src/**'
+      - 'tests/**'
+      - 'tools/**'
   workflow_dispatch:
 
 permissions:
@@ -17,6 +21,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pinned TypeScript compiler
+        run: npm install --no-audit --no-fund --no-package-lock
+
+      - name: Compile and test TypeScript weather core
+        run: |
+          npm run build:core
+          npm run test:core
 
       - name: Extract Android project
         run: |
@@ -29,6 +45,12 @@ jobs:
         working-directory: piranshahr-weather-android
         run: python3 ../redesign-weather.py
 
+      - name: Integrate TypeScript core and validate project
+        working-directory: piranshahr-weather-android
+        run: |
+          python3 ../tools/integrate_weather_core.py
+          python3 ../tools/validate_project.py
+
       - name: Set Android app version
         working-directory: piranshahr-weather-android
         run: |
@@ -40,12 +62,12 @@ jobs:
           if gradle_file is None:
               raise SystemExit("App module Gradle file not found")
           content = gradle_file.read_text()
-          content, code_count = re.subn(r"(?m)(\bversionCode\s*(?:=\s*)?)\d+", r'\g<1>11', content, count=1)
-          content, name_count = re.subn(r"""(?m)(\bversionName\s*(?:=\s*)?)["'][^"']*["']""", r'\g<1>"1.6.0"', content, count=1)
+          content, code_count = re.subn(r"(?m)(\bversionCode\s*(?:=\s*)?)\d+", r'\g<1>12', content, count=1)
+          content, name_count = re.subn(r"""(?m)(\bversionName\s*(?:=\s*)?)["'][^"']*["']""", r'\g<1>"1.7.0"', content, count=1)
           if code_count != 1 or name_count != 1:
               raise SystemExit(f"Could not safely update version fields in {gradle_file}")
           gradle_file.write_text(content)
-          print(f"Configured {gradle_file}: versionCode=11, versionName=1.6.0")
+          print(f"Configured {gradle_file}: versionCode=12, versionName=1.7.0")
           PY
 
       - name: Configure permanent release signing
@@ -166,16 +188,21 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.app_version.outputs.tag }}
-          name: آب و هوای قندیل v${{ steps.app_version.outputs.name }}
+          name: آب‌وهوای قندیل v${{ steps.app_version.outputs.name }}
           body: |
-            ## آب و هوای قندیل v${{ steps.app_version.outputs.name }}
+            ## آب‌وهوای قندیل v${{ steps.app_version.outputs.name }}
 
-            Latest Android APK for Qandil Weather.
+            APK اندروید برنامهٔ آب‌وهوای قندیل.
 
             - **Version:** ${{ steps.app_version.outputs.name }}
             - **File:** app-release.apk
 
-            Each release tag represents the app version. Rebuilding the same version updates this release instead of creating another numbered build.
+            - Kotlin: لایهٔ native اندروید و اعلان‌ها
+            - TypeScript: هستهٔ منطق هواشناسی
+            - Python: ادغام و کنترل کیفیت پروژه
+            - HTML/CSS: رابط کاربری
+
+            بازسازی همین نسخه، فایل انتشار موجود را به‌روزرسانی می‌کند و نسخهٔ تکراری نمی‌سازد.
           files: piranshahr-weather-android/app/build/outputs/apk/release/app-release.apk
           make_latest: true
           fail_on_unmatched_files: true
