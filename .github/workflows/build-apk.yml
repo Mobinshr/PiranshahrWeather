@@ -306,7 +306,7 @@ jobs:
 
           html = html.replace(marker, css + "\n" + marker, 1)
           page.write_text(html, encoding="utf-8")
-          print("Applied Material 3 visual refinements without changing weather logic.")
+          print("Applied the redesigned weather interface; weather logic is unchanged.")
           PY
 
       - name: Set Android app version
