@@ -44,6 +44,76 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;pa
 @media(max-width:365px){.city-select{max-width:105px;font-size:.86rem}.hero{grid-template-columns:minmax(0,1fr) 88px;padding-inline:13px}.hero-temp{font-size:3.9rem}.hero-icon{font-size:4.3rem}.day-row{grid-template-columns:52px 22px minmax(27px,1fr) 55px;gap:4px;padding-inline:6px}.day-temps{font-size:.62rem}}
 @media(prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0d1b2a;--ink:#eaf3fb;--muted:#93a9bd;--line:rgba(190,215,238,.12);--panel:#172a3e;--shadow:0 12px 30px rgba(0,0,0,.16)}html{background:#0d1b2a}body{background:radial-gradient(ellipse at 10% 0%,rgba(63,126,177,.17),transparent 36%),linear-gradient(180deg,#102238,#0d1b2a);color:#eaf3fb}header{background:rgba(20,39,59,.88);border-color:rgba(190,215,238,.12)}.city-select{color:#eaf3fb}.city-select option{background:#172a3e;color:#eaf3fb}.location-info p,.stat-label,.sun-label,.hour-time,.day-name small,.day-bar-wrap,.footer{color:#91a9c0}.icon-btn{background:#20364c;border-color:#314b63;color:#c5d9e9}.stat,.chart-card,.daily-list,.sun-card,.hour-card{background:#172a3e;border-color:#294258;box-shadow:0 8px 22px rgba(0,0,0,.13)}.stat-value,.day-name,.day-temps .max,.sun-time,.hour-temp{color:#edf5fc}.stat-value .unit,.day-temps .min{color:#8fa7bd}.section-title{color:#eaf3fb}.section-title:after{background:linear-gradient(90deg,#294258,transparent)}.day-row{border-color:#263d52}.day-bar{background:#2b4359}.chart-tooltip{background:#e7f4fc;color:#183b58}.chart-tooltip.blue{background:#dff4ff;color:#245a7e}.banner{background:#172a3e;border-color:#294258;color:#eaf3fb}.banner-body span{color:#9bb1c5}.banner-rain{background:#35291e;border-color:#5a442c}.banner-offline{background:#172d3d;border-color:#294c62}.skeleton-wrap .sk{background:linear-gradient(100deg,#172a3e 25%,#233c54 40%,#172a3e 60%);background-size:200% 100%}.error-card{background:#352322;border-color:#69413e;color:#ffd9d4}.toast,.inpage-notif{background:#172a3e;border-color:#294258;color:#eaf3fb}.inpage-notif-title{color:#eaf3fb}.inpage-notif-body{color:#9bb1c5}.pull-indicator{background:#172a3e;border-color:#294258;color:#9bb1c5}.pull-spinner{border-color:#344c62;border-top-color:#75bce6}footer{border-color:#294258;color:#819ab1}footer b{color:#c2d6e8}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Selectable Qandil themes */
+:root[data-theme="qandil"]{color-scheme:dark;background:#0b1628;--ink:#fff;--muted:rgba(255,255,255,.7);--line:rgba(255,255,255,.18);--shadow:0 12px 34px rgba(0,0,0,.18)}
+:root[data-theme="qandil"] body{background:radial-gradient(ellipse at 78% 4%,rgba(95,168,232,.34),transparent 36%),radial-gradient(ellipse at 8% 28%,rgba(75,112,190,.18),transparent 34%),linear-gradient(165deg,#081326,#142b4c 48%,#0b1529);color:#fff}
+:root[data-theme="qandil"] body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.28;background-image:radial-gradient(2px 2px at 18% 22%,#fff 40%,transparent 100%),radial-gradient(1px 1px at 73% 31%,#fff 40%,transparent 100%),radial-gradient(1.5px 1.5px at 42% 68%,#fff 40%,transparent 100%);background-size:260px 220px;animation:qandilSky 36s linear infinite}
+@keyframes qandilSky{to{background-position:260px 220px}}
+:root[data-theme="qandil"] header{background:rgba(8,18,39,.34);border-color:rgba(255,255,255,.14);box-shadow:0 10px 30px rgba(0,0,0,.12)}
+:root[data-theme="qandil"] .location-icon{background:rgba(255,255,255,.12);color:#d8edff}
+:root[data-theme="qandil"] .city-select{color:#fff}:root[data-theme="qandil"] .city-select option{background:#16233f;color:#fff}
+:root[data-theme="qandil"] .location-info p,:root[data-theme="qandil"] .section-title{color:rgba(255,255,255,.72)}
+:root[data-theme="qandil"] .icon-btn{background:rgba(12,22,48,.32);border-color:rgba(255,255,255,.2);color:#fff}
+:root[data-theme="qandil"] .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;min-height:0;padding:20px 8px 14px;border:0;border-radius:0;background:transparent;box-shadow:none;color:#fff}
+:root[data-theme="qandil"] .hero-main{display:contents}:root[data-theme="qandil"] .hero-main:before{display:none}
+:root[data-theme="qandil"] .hero-icon{order:1;font-size:3.5rem;line-height:1;filter:drop-shadow(0 8px 18px rgba(0,0,0,.3))}
+:root[data-theme="qandil"] .hero-temp{order:2;font-size:clamp(6rem,30vw,8.4rem);font-weight:100;line-height:.95;letter-spacing:-6px;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.18)}
+:root[data-theme="qandil"] .hero-temp sup{font-size:1.35rem;font-weight:300;color:rgba(255,255,255,.85)}
+:root[data-theme="qandil"] .hero-desc{order:3;font-size:1.25rem;color:#fff}:root[data-theme="qandil"] .hero-feels{order:4;color:rgba(255,255,255,.7)}
+:root[data-theme="qandil"] .stat,:root[data-theme="qandil"] .chart-card,:root[data-theme="qandil"] .hourly-scroll,:root[data-theme="qandil"] .daily-list,:root[data-theme="qandil"] .sun-card{background:rgba(12,22,48,.34);border-color:rgba(255,255,255,.16);box-shadow:0 10px 28px rgba(0,0,0,.12);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+:root[data-theme="qandil"] .stat-label,:root[data-theme="qandil"] .stat-value .unit,:root[data-theme="qandil"] .hour-time,:root[data-theme="qandil"] .day-name small,:root[data-theme="qandil"] .day-bar-wrap,:root[data-theme="qandil"] .sun-label{color:rgba(255,255,255,.65)}
+:root[data-theme="qandil"] .stat-label svg{color:#8ecbfa}:root[data-theme="qandil"] .stat-value,:root[data-theme="qandil"] .hour-temp,:root[data-theme="qandil"] .day-name,:root[data-theme="qandil"] .day-temps .max,:root[data-theme="qandil"] .sun-time{color:#fff}
+:root[data-theme="qandil"] .hour-card{background:transparent;color:#fff;box-shadow:none;border-color:rgba(255,255,255,.13)}:root[data-theme="qandil"] .hour-card.now{background:rgba(255,255,255,.14)}
+:root[data-theme="qandil"] .day-row{border-color:rgba(255,255,255,.1)}:root[data-theme="qandil"] .day-bar{background:rgba(255,255,255,.14)}:root[data-theme="qandil"] .day-temps .min{color:rgba(255,255,255,.55)}
+:root[data-theme="qandil"] .section-title:after{background:linear-gradient(90deg,rgba(255,255,255,.2),transparent)}
+:root[data-theme="qandil"] footer{border-color:rgba(255,255,255,.14);color:rgba(255,255,255,.55)}:root[data-theme="qandil"] footer b{color:rgba(255,255,255,.85)}
+:root[data-theme="qandil"] .banner,:root[data-theme="qandil"] .toast,:root[data-theme="qandil"] .inpage-notif{background:rgba(10,20,42,.94);border-color:rgba(255,255,255,.18);color:#fff}
+:root[data-theme="qandil"] .banner-body span,:root[data-theme="qandil"] .inpage-notif-body{color:rgba(255,255,255,.7)}
+:root[data-theme="qandil"] .pull-indicator{background:rgba(10,20,42,.94);border-color:rgba(255,255,255,.18);color:#fff}:root[data-theme="qandil"] .pull-spinner{border-color:rgba(255,255,255,.2);border-top-color:#fff}
+:root[data-theme="night"]{color-scheme:dark;background:#07111f}:root[data-theme="night"] body{background:linear-gradient(160deg,#07111f,#101f35 58%,#080f1b);color:#edf5ff}
+:root[data-theme="night"] header{background:rgba(17,31,51,.92);border-color:#2a4058}:root[data-theme="night"] .city-select{color:#edf5ff}
+:root[data-theme="night"] .location-info p,:root[data-theme="night"] .section-title{color:#a8bdd1}
+:root[data-theme="night"] .location-icon,:root[data-theme="night"] .icon-btn{background:#1b3048;border-color:#334b64;color:#eaf4ff}
+:root[data-theme="night"] .hero{background:linear-gradient(135deg,#214b70,#172d4c 70%,#14233a);box-shadow:0 16px 34px rgba(0,0,0,.25)}
+:root[data-theme="night"] .stat,:root[data-theme="night"] .chart-card,:root[data-theme="night"] .hourly-scroll,:root[data-theme="night"] .daily-list,:root[data-theme="night"] .sun-card{background:#172a40;border-color:#2b425b;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+:root[data-theme="night"] .stat-label,:root[data-theme="night"] .stat-value .unit,:root[data-theme="night"] .hour-time,:root[data-theme="night"] .day-name small,:root[data-theme="night"] .day-bar-wrap,:root[data-theme="night"] .sun-label{color:#9bb1c7}
+:root[data-theme="night"] .stat-value,:root[data-theme="night"] .day-name,:root[data-theme="night"] .day-temps .max,:root[data-theme="night"] .sun-time,:root[data-theme="night"] .hour-temp{color:#f2f7fd}
+:root[data-theme="night"] .day-row{border-color:#2a4058}:root[data-theme="night"] .day-bar{background:#2a4058}
+:root[data-theme="night"] footer{border-color:#2a4058;color:#8ea5bc}:root[data-theme="night"] footer b{color:#d9e8f6}
+:root[data-theme="classic"]{color-scheme:light;background:#edf5fc}
+:root[data-theme="classic"] body{background:radial-gradient(ellipse at 10% 0%,rgba(110,190,239,.18),transparent 35%),linear-gradient(180deg,#f2f8fd,#eaf2f9);color:#18334f}
+:root[data-theme="classic"] header{background:rgba(255,255,255,.88);border-color:rgba(255,255,255,.8)}
+:root[data-theme="classic"] .city-select{color:#183b5d}
+:root[data-theme="classic"] .location-info p,:root[data-theme="classic"] .section-title{color:#7189a2}
+:root[data-theme="classic"] .icon-btn{background:#f5faff;border-color:#e1edf6;color:#477493}
+:root[data-theme="classic"] .stat,:root[data-theme="classic"] .chart-card,:root[data-theme="classic"] .hourly-scroll,:root[data-theme="classic"] .daily-list,:root[data-theme="classic"] .sun-card{background:#fff;border-color:#e4eef6;box-shadow:0 7px 20px rgba(35,83,128,.06)}
+:root[data-theme="classic"] .stat-label,:root[data-theme="classic"] .stat-value .unit,:root[data-theme="classic"] .hour-time,:root[data-theme="classic"] .day-name small,:root[data-theme="classic"] .day-bar-wrap,:root[data-theme="classic"] .sun-label{color:#8297ac}
+:root[data-theme="classic"] .stat-value,:root[data-theme="classic"] .day-name,:root[data-theme="classic"] .day-temps .max,:root[data-theme="classic"] .sun-time,:root[data-theme="classic"] .hour-temp{color:#244767}
+:root[data-theme="classic"] .day-row{border-color:#edf2f7}:root[data-theme="classic"] .day-bar{background:#e9f0f6}
+:root[data-theme="classic"] footer{border-color:#dce8f1;color:#91a4b7}:root[data-theme="classic"] footer b{color:#56738f}
+.settings-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:12px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(3,10,22,.64);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.settings-overlay[hidden]{display:none!important}
+.settings-sheet{width:100%;max-width:560px;max-height:82vh;overflow:auto;padding:20px 17px 18px;border:1px solid rgba(255,255,255,.85);border-radius:25px;background:#f8fbff;color:#18334f;box-shadow:0 22px 70px rgba(0,0,0,.28);animation:settingsIn .22s ease-out}
+@keyframes settingsIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.settings-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:7px}.settings-head h2{font-size:1.08rem;font-weight:900}.settings-head p{font-size:.68rem;color:#8297ac;margin-bottom:4px}.settings-close{width:34px;height:34px;border:0;border-radius:12px;background:rgba(80,120,155,.1);color:inherit;font-size:1.4rem}
+.settings-note{margin:0 0 14px;color:#7890a7;font-size:.72rem;line-height:1.8}.theme-options{display:grid;gap:9px}
+.theme-choice{display:flex;align-items:center;gap:11px;width:100%;padding:10px 12px;border:1px solid #dce8f1;border-radius:16px;background:#fff;color:#244767;text-align:right;transition:border-color .18s,transform .18s}
+.theme-choice:active{transform:scale(.99)}.theme-choice[aria-pressed="true"]{border-color:#398bc4;box-shadow:0 0 0 2px rgba(57,139,196,.13);background:#f2f9ff}
+.theme-preview{width:48px;height:42px;flex:0 0 48px;border-radius:12px;border:1px solid rgba(0,0,0,.08);background:linear-gradient(145deg,#081326,#438fce);position:relative;overflow:hidden}
+.theme-preview:after{content:"";position:absolute;left:8px;right:8px;bottom:7px;height:9px;border-radius:7px;background:rgba(255,255,255,.72)}
+.preview-classic{background:linear-gradient(145deg,#f2f8fd,#c9e4f7)}.preview-night{background:linear-gradient(145deg,#07111f,#274969)}.preview-auto{background:linear-gradient(110deg,#edf5fc 0 50%,#14243a 50%)}
+.theme-choice-copy{display:flex;flex:1;flex-direction:column;gap:3px}.theme-choice-copy b{font-size:.79rem}.theme-choice-copy small{font-size:.65rem;color:#8297ac;line-height:1.5}.theme-check{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:#e7f2fa;color:transparent;font-size:.75rem;font-weight:900}
+.theme-choice[aria-pressed="true"] .theme-check{background:#2e83c7;color:#fff}
+:root[data-theme="qandil"] .settings-sheet,:root[data-theme="night"] .settings-sheet{background:#14263d;border-color:#2c4560;color:#f1f7fd}
+:root[data-theme="qandil"] .settings-note,:root[data-theme="night"] .settings-note,:root[data-theme="qandil"] .theme-choice-copy small,:root[data-theme="night"] .theme-choice-copy small{color:#9bb1c7}
+:root[data-theme="qandil"] .theme-choice,:root[data-theme="night"] .theme-choice{background:#1b3048;border-color:#334b64;color:#edf5fc}
+:root[data-theme="qandil"] .theme-choice[aria-pressed="true"],:root[data-theme="night"] .theme-choice[aria-pressed="true"]{background:#203d59;border-color:#71b8e5}
+:root[data-theme="qandil"] .theme-check,:root[data-theme="night"] .theme-check{background:#2c4560}
+@media(prefers-color-scheme:dark){:root[data-theme="auto"]{color-scheme:dark;background:#07111f}:root[data-theme="auto"] body{background:linear-gradient(160deg,#07111f,#10233b 60%,#0a1422);color:#edf5ff}:root[data-theme="auto"] header{background:rgba(17,31,51,.92);border-color:#2a4058}:root[data-theme="auto"] .city-select{color:#edf5ff}:root[data-theme="auto"] .location-info p,:root[data-theme="auto"] .section-title{color:#a8bdd1}:root[data-theme="auto"] .location-icon,:root[data-theme="auto"] .icon-btn{background:#1b3048;border-color:#334b64;color:#eaf4ff}:root[data-theme="auto"] .hero{background:linear-gradient(135deg,#214b70,#172d4c 70%,#14233a)}:root[data-theme="auto"] .stat,:root[data-theme="auto"] .chart-card,:root[data-theme="auto"] .hourly-scroll,:root[data-theme="auto"] .daily-list,:root[data-theme="auto"] .sun-card{background:#172a40;border-color:#2b425b}:root[data-theme="auto"] .stat-label,:root[data-theme="auto"] .stat-value .unit,:root[data-theme="auto"] .hour-time,:root[data-theme="auto"] .day-name small,:root[data-theme="auto"] .day-bar-wrap,:root[data-theme="auto"] .sun-label{color:#9bb1c7}:root[data-theme="auto"] .stat-value,:root[data-theme="auto"] .day-name,:root[data-theme="auto"] .day-temps .max,:root[data-theme="auto"] .sun-time,:root[data-theme="auto"] .hour-temp{color:#f2f7fd}:root[data-theme="auto"] .day-row{border-color:#2a4058}:root[data-theme="auto"] .day-bar{background:#2a4058}:root[data-theme="auto"] footer{border-color:#2a4058;color:#8ea5bc}}
+@media(max-width:560px){:root[data-theme="qandil"] .hero{padding:18px 4px 12px}:root[data-theme="qandil"] .hero-temp{font-size:clamp(5.8rem,29vw,7.4rem)}}
+@media(prefers-reduced-motion:reduce){:root[data-theme="qandil"] body:before{animation:none}}
+
 </style>"""
 
 body = r"""<body>
@@ -57,6 +127,7 @@ body = r"""<body>
 <div class="actions">
 <button id="installBtn" class="icon-btn install-btn" aria-label="نصب اپ" title="نصب به‌عنوان اپ" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
 <button id="notifBtn" class="icon-btn notif-btn" aria-label="اعلان بارش" title="فعال‌سازی اعلان بارش"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
+<button id="settingsBtn" class="icon-btn" aria-label="تنظیمات ظاهر" title="تنظیمات ظاهر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.84A1.7 1.7 0 0 0 8.4 10a1.7 1.7 0 0 0-.34-1.88L8 8.06l1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.67 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.03H21v2.4h-.1A1.7 1.7 0 0 0 19.4 15z"/></svg></button>
 <button id="refreshBtn" class="icon-btn" aria-label="به‌روزرسانی" title="به‌روزرسانی"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
 </div></header>
 <div id="loading" class="skeleton-wrap"><div class="sk hero"></div><div class="sk stats"></div><div class="sk chart"></div></div>
@@ -73,7 +144,44 @@ body = r"""<body>
 <footer><span>آخرین به‌روزرسانی: <b id="lastUpdate">—</b></span><span>به‌روزرسانی بعدی: <b id="countdown">—</b></span></footer>
 </div>
 <div id="toast" class="toast"></div><div id="notifStack" class="inpage-notif-stack" aria-live="polite"></div>
+<div id="settingsOverlay" class="settings-overlay" hidden>
+<section class="settings-sheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+<div class="settings-head"><div><p>شخصی‌سازی قندیل</p><h2 id="settingsTitle">انتخاب ظاهر برنامه</h2></div><button id="settingsClose" class="settings-close" aria-label="بستن تنظیمات">×</button></div>
+<p class="settings-note">هر زمان خواستی می‌توانی پوسته را عوض کنی. انتخابت ذخیره می‌شود و اطلاعات آب‌وهوا دوباره بارگیری نمی‌شوند.</p>
+<div class="theme-options">
+<button class="theme-choice" type="button" data-theme-choice="qandil" aria-pressed="false"><span class="theme-preview"></span><span class="theme-choice-copy"><b>قندیل پویا</b><small>طراحی جدید با پس‌زمینهٔ آسمانی و کارت‌های شیشه‌ای</small></span><span class="theme-check">✓</span></button>
+<button class="theme-choice" type="button" data-theme-choice="classic" aria-pressed="false"><span class="theme-preview preview-classic"></span><span class="theme-choice-copy"><b>آسمانی روشن</b><small>ظاهر روشن و مرتب نسخهٔ قبلی</small></span><span class="theme-check">✓</span></button>
+<button class="theme-choice" type="button" data-theme-choice="night" aria-pressed="false"><span class="theme-preview preview-night"></span><span class="theme-choice-copy"><b>شب قندیل</b><small>حالت تیره با کارت‌های ساده و خوانا</small></span><span class="theme-check">✓</span></button>
+<button class="theme-choice" type="button" data-theme-choice="auto" aria-pressed="false"><span class="theme-preview preview-auto"></span><span class="theme-choice-copy"><b>هماهنگ با دستگاه</b><small>تغییر روشنایی بر اساس تنظیمات گوشی</small></span><span class="theme-check">✓</span></button>
+</div>
+</section>
+</div>
 """
+
+theme_script = r"""<script>
+(function(){
+  var KEY='qandil-weather-theme-v1',allowed=['qandil','classic','night','auto'];
+  var root=document.documentElement,overlay=document.getElementById('settingsOverlay');
+  var openBtn=document.getElementById('settingsBtn'),closeBtn=document.getElementById('settingsClose');
+  var choices=Array.prototype.slice.call(document.querySelectorAll('[data-theme-choice]'));
+  function apply(theme,save){
+    if(allowed.indexOf(theme)<0)theme='qandil';
+    root.setAttribute('data-theme',theme);
+    if(save){try{localStorage.setItem(KEY,theme);}catch(e){}}
+    choices.forEach(function(btn){btn.setAttribute('aria-pressed',btn.getAttribute('data-theme-choice')===theme?'true':'false');});
+    var meta=document.querySelector('meta[name="theme-color"]');
+    if(meta)meta.content=theme==='qandil'?'#0b1628':theme==='night'?'#07111f':theme==='auto'?'#102238':'#edf5fc';
+  }
+  function open(){overlay.hidden=false;document.body.style.overflow='hidden';}
+  function close(){overlay.hidden=true;document.body.style.overflow='';}
+  openBtn.addEventListener('click',open);closeBtn.addEventListener('click',close);
+  overlay.addEventListener('click',function(e){if(e.target===overlay)close();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!overlay.hidden)close();});
+  choices.forEach(function(btn){btn.addEventListener('click',function(){apply(btn.getAttribute('data-theme-choice'),true);});});
+  var saved='qandil';try{saved=localStorage.getItem(KEY)||'qandil';}catch(e){}
+  apply(saved,false);
+})();
+</script>"""
 
 ids = set(re.findall(r'\bid=["\']([^"\']+)', body))
 needed = set(re.findall(r"\$\('([^']+)'\)", app_script))
@@ -81,7 +189,7 @@ missing = sorted(needed - ids)
 if missing:
     raise SystemExit("Redesign omitted required DOM IDs: " + ", ".join(missing))
 
-html = '<!DOCTYPE html>\n<html lang="fa" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n<meta name="theme-color" content="#0b1628">\n<title>آب و هوای قندیل</title>\n' + css + '\n</head>\n' + body + '\n' + app_script + '\n</body>\n</html>\n'
+html = '<!DOCTYPE html>\n<html lang="fa" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n<meta name="theme-color" content="#0b1628">\n<title>آب و هوای قندیل</title>\n' + css + '\n</head>\n' + body + '\n' + app_script + '\n' + theme_script + '\n</body>\n</html>\n'
 
 # Rename the Android launcher label while preserving the application ID and signing identity.
 values_dir = Path("app/src/main/res/values")
