@@ -206,6 +206,59 @@ jobs:
           print(f"Configured {gradle_file}: versionCode=3, versionName=1.0.1")
           PY
 
+      - name: Configure permanent release signing
+        working-directory: piranshahr-weather-android
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          candidates = [Path("app/build.gradle.kts"), Path("app/build.gradle")]
+          gradle_file = next((p for p in candidates if p.is_file()), None)
+          if gradle_file is None:
+              raise SystemExit("App module Gradle file not found")
+          if gradle_file.suffix == ".kts":
+              signing = """
+
+          android {
+              signingConfigs {
+                  create("release") {
+                      storeFile = file(System.getenv("ANDROID_KEYSTORE_PATH"))
+                      storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                      keyAlias = System.getenv("ANDROID_KEY_ALIAS")
+                      keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+                  }
+              }
+              buildTypes {
+                  getByName("release") {
+                      signingConfig = signingConfigs.getByName("release")
+                  }
+              }
+          }
+          """
+          else:
+              signing = """
+
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
+                      storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                      keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                      keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                  }
+              }
+          }
+          """
+          original = gradle_file.read_text()
+          if "ANDROID_KEYSTORE_PATH" not in original:
+              gradle_file.write_text(original + signing)
+          print(f"Configured permanent release signing in {gradle_file}")
+          PY
+
       - name: Read Android app version
         id: app_version
         working-directory: piranshahr-weather-android
@@ -230,20 +283,32 @@ jobs:
         with:
           gradle-version: '8.6'
 
+      - name: Prepare permanent signing key
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/mobin-apps-release.jks"
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/mobin-apps-release.jks" >> "$GITHUB_ENV"
+
       - name: Fix notification launcher resource reference
         working-directory: piranshahr-weather-android
         run: |
           sed -i 's/R\.mipmap\.ic_launcher/R.drawable.ic_launcher/g' app/src/main/java/com/example/weather/NotificationHelper.kt
 
-      - name: Build APK
+      - name: Build signed release APK
         working-directory: piranshahr-weather-android
-        run: gradle assembleDebug
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: gradle assembleRelease
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: Piranshahr-Weather-APK
-          path: piranshahr-weather-android/app/build/outputs/apk/debug/app-debug.apk
+          path: piranshahr-weather-android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
 
       - name: Publish versioned APK release
@@ -257,10 +322,10 @@ jobs:
             Latest Android APK for Piranshahr Weather.
 
             - **Version:** ${{ steps.app_version.outputs.name }}
-            - **File:** app-debug.apk
+            - **File:** app-release.apk
 
             Each release tag represents the app version. Rebuilding the same version updates this release instead of creating another numbered build.
-          files: piranshahr-weather-android/app/build/outputs/apk/debug/app-debug.apk
+          files: piranshahr-weather-android/app/build/outputs/apk/release/app-release.apk
           make_latest: true
           fail_on_unmatched_files: true
 
