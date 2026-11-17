@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2a6fd6">
+<title>آب‌وهوا</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--top:#2a6fd6;--bot:#79b8f5}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+@font-face{font-family:SysEmoji;src:local("Apple Color Emoji"),local("Segoe UI Emoji"),local("Noto Color Emoji"),local("Twemoji Mozilla");unicode-range:U+00A9,U+00AE,U+200D,U+203C-3299,U+FE0F,U+1F000-1FAFF}
+body{font-family:SysEmoji,Vazirmatn,-apple-system,system-ui,sans-serif;color:#fff;min-height:100vh;background:linear-gradient(180deg,var(--top),var(--bot)) fixed;transition:background .6s}
+.wrap{max-width:520px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 40px}
+.search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);border-radius:12px;padding:0 12px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.search input{flex:1;min-width:0;background:none;border:0;color:#fff;font:inherit;font-size:16px;padding:10px 0;outline:none}
+.search input::placeholder{color:rgba(255,255,255,.65)}
+.search button{background:none;border:0;font-size:18px;cursor:pointer;padding:4px}
+#sug{list-style:none;padding:0;margin-top:8px;background:rgba(20,30,50,.55);border-radius:14px;overflow:hidden;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+#sug li{padding:12px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.15)}
+#sug li:last-child{border:0}
+:focus-visible{outline:2px solid #fff;outline-offset:2px;border-radius:8px}
+.h i,.day .i{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",SysEmoji,sans-serif;font-variant-emoji:emoji;font-style:normal}
+.mini{position:fixed;top:0;left:0;right:0;text-align:center;padding:calc(env(safe-area-inset-top,0px) + 10px) 0 10px;opacity:0;pointer-events:none;z-index:5;background:linear-gradient(var(--top),transparent);font-weight:600}
+.mini small{display:block;font-weight:400;font-size:13px;opacity:.9}
+.hero{text-align:center;padding:44px 0 34px}
+.city{font-size:32px;font-weight:400}
+.temp{font-size:104px;font-weight:200;line-height:1.1;margin-top:2px;padding-right:.2em}
+.cond{font-size:20px;font-weight:600;text-shadow:0 1px 8px rgba(0,0,0,.12)}
+.hl{font-size:18px;margin-top:2px}
+.card{background:rgba(255,255,255,.17);border-radius:20px;padding:12px 16px 14px;margin-top:12px;backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3)}
+.card h2{font-size:13px;font-weight:600;opacity:.72;margin-bottom:10px;display:flex;gap:6px;align-items:center}
+.card h2+.hr{margin:-4px 0 10px;border:0;border-top:1px solid rgba(255,255,255,.2)}
+.sum{font-size:14px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.2)}
+.scroll{overflow-x:auto;scrollbar-width:none;margin:0 -6px}
+.hours{display:flex;min-width:max-content;padding:0 2px}
+.h{width:58px;text-align:center;font-size:14px;font-weight:600}
+.h i{display:block;font-style:normal;font-size:24px;margin:8px 0 6px}
+.h span{font-weight:400;opacity:.9}
+.day{display:grid;grid-template-columns:62px 30px 36px 1fr 36px;align-items:center;gap:6px;padding:11px 0;border-top:1px solid rgba(255,255,255,.2);font-size:16px}
+.day:first-of-type{border:0;padding-top:2px}
+.day b{font-weight:600}.day .i{font-size:22px;text-align:center}
+.day .lo{opacity:.62;text-align:left;direction:ltr}.day .hi{text-align:right;direction:ltr;font-weight:600}
+.bar{height:5px;border-radius:9px;background:rgba(0,0,0,.2);position:relative;direction:ltr}
+.bar u{position:absolute;top:0;bottom:0;border-radius:9px}
+.bar s{position:absolute;top:-1.5px;width:8px;height:8px;border-radius:50%;background:#fff;border:1.5px solid rgba(0,0,0,.35);margin-left:-4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.grid .card{margin:0;min-height:158px;display:flex;flex-direction:column}
+.big{font-size:34px;font-weight:400;line-height:1.2}
+.lvl{font-size:19px;font-weight:600}
+.note{font-size:13px;margin-top:auto;opacity:.9}
+.uv{height:5px;border-radius:9px;margin:10px 0;background:linear-gradient(90deg,#3ec46d,#f5d63d,#f5963d,#e8453c,#a24bd6);position:relative;direction:ltr}
+.uv s{position:absolute;top:-1.5px;width:8px;height:8px;border-radius:50%;background:#fff;border:1.5px solid rgba(0,0,0,.3);margin-left:-4px}
+#msg{text-align:center;padding:90px 0;opacity:.9}
+@media(prefers-reduced-motion:reduce){body{transition:none}}
+</style>
+</head>
+<body>
+<div class="mini" id="mini"><span id="mc"></span><small id="mt"></small></div>
+<div class="wrap">
+  <form class="search" id="f"><span>🔍</span><input id="q" placeholder="جستجوی شهر در ایران…" autocomplete="off" aria-label="جستجوی شهر"><button type="button" id="loc" aria-label="موقعیت من">📍</button></form>
+  <ul id="sug" hidden></ul>
+  <div id="msg">در حال دریافت اطلاعات…</div>
+  <main id="app" hidden>
+    <section class="hero" id="hero">
+      <div class="city" id="city"></div>
+      <div class="temp" id="temp"></div>
+      <div class="cond" id="cond"></div>
+      <div class="hl" id="hl"></div>
+    </section>
+    <section class="card"><h2>🕐 پیش‌بینی ساعتی</h2><hr class="hr"><div class="scroll"><div class="hours" id="hours"></div></div></section>
+    <section class="card"><h2>📅 پیش‌بینی ۷ روزه</h2><hr class="hr"><div id="days"></div></section>
+    <div class="grid" id="stats"></div>
+  </main>
+</div>
+<script>
+const fa=n=>Math.round(n).toLocaleString('fa-IR');
+const dg=s=>String(s).replace(/\d/g,x=>'۰۱۲۳۴۵۶۷۸۹'[x]);
+const W={0:['آسمان صاف','☀️','c'],1:['کم‌ابر','🌤️','c'],2:['نیمه‌ابری','⛅','p'],3:['ابری','☁️','o'],45:['مه‌آلود','🌫️','o'],48:['مه یخی','🌫️','o'],
+51:['نم‌نم باران','🌦️','r'],53:['نم‌نم باران','🌦️','r'],55:['نم‌نم باران','🌦️','r'],61:['باران ملایم','🌧️','r'],63:['باران','🌧️','r'],65:['باران شدید','🌧️','r'],
+71:['برف ملایم','🌨️','s'],73:['برف','❄️','s'],75:['برف سنگین','❄️','s'],80:['رگبار','🌦️','r'],81:['رگبار','🌧️','r'],82:['رگبار شدید','⛈️','r'],95:['رعدوبرق','⛈️','t'],96:['رعدوبرق و تگرگ','⛈️','t'],99:['رعدوبرق و تگرگ','⛈️','t']};
+const w=c=>W[c]||['نامشخص','🌡️','o'];
+const SKY={c:{d:['#2a6fd6','#79b8f5'],n:['#0b1230','#273a73']},p:{d:['#3a73c4','#8fb4de'],n:['#121a3a','#33447a']},o:{d:['#6d7b8f','#a7b2c1'],n:['#1a202e','#3a4457']},
+r:{d:['#445a7a','#8196b4'],n:['#0f1626','#2a3855']},s:{d:['#6e88ad','#c5d6ea'],n:['#1c2744','#47598a']},t:{d:['#2b2c4a','#5d5683'],n:['#090a1a','#292447']}};
+const ST=[[-10,[90,200,250]],[5,[100,210,230]],[15,[130,220,120]],[25,[250,215,80]],[35,[255,150,50]],[45,[255,80,60]]];
+function tc(t){let i=0;while(i<ST.length-2&&t>ST[i+1][0])i++;const[a,A]=ST[i],[b,B]=ST[i+1],k=Math.max(0,Math.min(1,(t-a)/(b-a)));return `rgb(${A.map((v,j)=>Math.round(v+(B[j]-v)*k)).join()})`}
+const dn=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+const $=id=>document.getElementById(id);
+const get=async (u,options={})=>{const r=await fetch(u,options);if(!r.ok)throw 0;return r.json()};
+async function load(lat,lon,name){
+  $('msg').hidden=false;$('msg').textContent='در حال دریافت اطلاعات…';$('app').hidden=true;
+  try{render(await get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,sunrise,sunset,precipitation_probability_max&timezone=auto&forecast_days=7`),name)}
+  catch(e){$('msg').textContent='خطا در دریافت اطلاعات آب‌وهوا. اینترنت را بررسی کنید 📡'}
+}
+function render(d,name){
+  const c=d.current,[txt,ico,k]=w(c.weather_code),sky=SKY[k][c.is_day?'d':'n'],D=d.daily;
+  const r=document.documentElement.style;r.setProperty('--top',sky[0]);r.setProperty('--bot',sky[1]);
+  document.querySelector('meta[name=theme-color]').content=sky[0];
+  $('city').textContent=name;$('temp').textContent=fa(c.temperature_2m)+'°';$('cond').textContent=txt;
+  $('hl').textContent=`بیشینه ${fa(D.temperature_2m_max[0])}°  کمینه ${fa(D.temperature_2m_min[0])}°`;
+  $('mc').textContent=name;$('mt').textContent=`${fa(c.temperature_2m)}° | ${txt}`;
+  const now=c.time.slice(0,13);let i=d.hourly.time.findIndex(t=>t.slice(0,13)===now);if(i<0)i=0;
+  $('hours').innerHTML=d.hourly.time.slice(i,i+24).map((t,j)=>`<div class="h"><span>${j?dg(+t.slice(11,13)):'اکنون'}</span><i>${w(d.hourly.weather_code[i+j])[1]}</i>${fa(d.hourly.temperature_2m[i+j])}°</div>`).join('');
+  const mn=Math.min(...D.temperature_2m_min),mx=Math.max(...D.temperature_2m_max),sp=(mx-mn)||1;
+  $('days').innerHTML=D.time.map((t,j)=>{
+    const lo=D.temperature_2m_min[j],hi=D.temperature_2m_max[j],l=(lo-mn)/sp*100,wd=Math.max((hi-lo)/sp*100,5);
+    const dot=j?'':`<s style="left:${Math.min(Math.max((c.temperature_2m-mn)/sp*100,0),100)}%"></s>`;
+    return `<div class="day"><b>${j?dn[new Date(t+'T12:00').getDay()]:'امروز'}</b><span class="i">${w(D.weather_code[j])[1]}</span><span class="lo">${fa(lo)}°</span><div class="bar"><u style="left:${l}%;width:${wd}%;background:linear-gradient(90deg,${tc(lo)},${tc(hi)})"></u>${dot}</div><span class="hi">${fa(hi)}°</span></div>`}).join('');
+  const tm=s=>dg(+s.slice(11,13))+':'+dg(s.slice(14,16));
+  const uv=D.uv_index_max[0],ul=uv<3?'کم':uv<6?'متوسط':uv<8?'زیاد':uv<11?'خیلی زیاد':'شدید';
+  const ws=c.wind_speed_10m,df=c.apparent_temperature-c.temperature_2m,hm=c.relative_humidity_2m;
+  const cd=(h,b,x,n)=>`<div class="card"><h2>${h}</h2>${b}<div class="note">${n}</div></div>`;
+  $('stats').innerHTML=
+   cd('☀️ شاخص UV',`<div class="big">${fa(uv)}</div><div class="lvl">${ul}</div><div class="uv"><s style="left:${Math.min(uv/11,1)*100}%"></s></div>`,0,'بیشینه امروز')+
+   cd('🌇 غروب',`<div class="big">${tm(D.sunset[0])}</div>`,0,'طلوع: '+tm(D.sunrise[0]))+
+   cd('💨 باد',`<div class="big">${fa(ws)}</div><div class="lvl">کیلومتر بر ساعت</div>`,0,ws<12?'نسیم ملایم':ws<30?'باد متوسط':'باد قوی')+
+   cd('🌡️ حس واقعی',`<div class="big">${fa(c.apparent_temperature)}°</div>`,0,df>1?'گرم‌تر از دمای واقعی':df<-1?'سردتر از دمای واقعی':'نزدیک به دمای واقعی')+
+   cd('💧 رطوبت',`<div class="big">${fa(hm)}٪</div>`,0,hm<30?'هوای خشک':hm<60?'رطوبت مطلوب':'هوای مرطوب')+
+   cd('☔ احتمال بارش',`<div class="big">${fa(D.precipitation_probability_max[0]||0)}٪</div>`,0,'بیشینه امروز');
+  $('msg').hidden=true;$('app').hidden=false;onScroll();
+}
+function onScroll(){const p=Math.min(Math.max((scrollY-70)/110,0),1);$('mini').style.opacity=p;$('hero').style.opacity=1-p*.9}
+addEventListener('scroll',onScroll,{passive:true});
+let tm,searchController,searchSeq=0;
+function showSearchMessage(message){const s=$('sug');s.replaceChildren();const li=document.createElement('li');li.textContent=message;li.style.cursor='default';s.append(li);s.hidden=false}
+$('q').addEventListener('input',e=>{
+  clearTimeout(tm);if(searchController)searchController.abort();
+  const v=e.target.value.trim(),seq=++searchSeq;
+  if(v.length<2){$('sug').hidden=true;$('sug').replaceChildren();return}
+  tm=setTimeout(async()=>{
+    searchController=new AbortController();
+    try{
+      const url=`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=20&language=fa&countryCode=IR&format=json`;
+      const r=await get(url,{signal:searchController.signal});
+      if(seq!==searchSeq||$('q').value.trim()!==v)return;
+      const s=$('sug');s.replaceChildren();
+      const results=(r.results||[]).filter(x=>x.country_code==='IR'||x.country==='Iran');
+      if(!results.length){showSearchMessage('شهری با این نام در ایران پیدا نشد');return}
+      results.forEach(x=>{
+        const li=document.createElement('li');
+        const province=x.admin1?`، ${x.admin1}`:'';
+        li.textContent=`${x.name}${province}`;
+        li.dataset.lat=x.latitude;li.dataset.lon=x.longitude;li.dataset.name=x.name;
+        s.append(li);
+      });
+      s.hidden=false;
+    }catch(e){if(e.name!=='AbortError'&&seq===searchSeq)showSearchMessage('جست‌وجو انجام نشد؛ اتصال اینترنت را بررسی کنید')}
+  },280);
+});
+$('sug').addEventListener('click',e=>{
+  const li=e.target.closest('li');if(!li||!li.dataset.lat)return;
+  $('sug').hidden=true;$('q').value='';
+  load(Number(li.dataset.lat),Number(li.dataset.lon),li.dataset.name);
+});
+$('f').addEventListener('submit',e=>{e.preventDefault();const first=$('sug').querySelector('li[data-lat]');if(first)first.click()});
+$('loc').onclick=()=>{
+  if(!navigator.geolocation){$('msg').hidden=false;$('msg').textContent='موقعیت‌یابی در این دستگاه پشتیبانی نمی‌شود';$('app').hidden=true;return}
+  $('loc').disabled=true;$('msg').hidden=false;$('msg').textContent='در حال دریافت موقعیت مکانی…';$('app').hidden=true;
+  navigator.geolocation.getCurrentPosition(async p=>{
+    const {latitude,longitude}=p.coords;let city='موقعیت من';
+    try{
+      const r=await get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=fa`);
+      city=r.city||r.locality||r.localityInfo?.administrative?.[2]?.name||r.principalSubdivision||city;
+    }catch(e){}
+    $('loc').disabled=false;load(latitude,longitude,city);
+  },err=>{
+    $('loc').disabled=false;$('msg').hidden=false;$('app').hidden=true;
+    $('msg').textContent=err.code===1?'اجازهٔ دسترسی به موقعیت مکانی داده نشد. از تنظیمات برنامه، مجوز مکان را فعال کنید.':err.code===3?'دریافت موقعیت بیش از حد طول کشید؛ دوباره تلاش کنید.':'موقعیت مکانی در دسترس نیست. GPS و اینترنت را بررسی کنید.';
+  },{enableHighAccuracy:true,timeout:18000,maximumAge:300000});
+};
+load(36.6959,45.1413,'پیرانشهر');
+</script>
+</body>
+</html>
