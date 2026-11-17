@@ -153,7 +153,12 @@ jobs:
                               origin: String?,
                               callback: GeolocationPermissions.Callback?
                           ) {
-                              val activity = context as? Activity
+                              var currentContext: android.content.Context = context
+                              var activity: Activity? = currentContext as? Activity
+                              while (activity == null && currentContext is android.content.ContextWrapper) {
+                                  currentContext = currentContext.baseContext
+                                  activity = currentContext as? Activity
+                              }
                               if (activity == null || callback == null) {
                                   callback?.invoke(origin ?: "", false, false)
                                   return
