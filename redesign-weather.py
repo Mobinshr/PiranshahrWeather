@@ -92,9 +92,9 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;pa
 :root[data-theme="classic"] .stat-value,:root[data-theme="classic"] .day-name,:root[data-theme="classic"] .day-temps .max,:root[data-theme="classic"] .sun-time,:root[data-theme="classic"] .hour-temp{color:#244767}
 :root[data-theme="classic"] .day-row{border-color:#edf2f7}:root[data-theme="classic"] .day-bar{background:#e9f0f6}
 :root[data-theme="classic"] footer{border-color:#dce8f1;color:#91a4b7}:root[data-theme="classic"] footer b{color:#56738f}
-.settings-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:12px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(3,10,22,.64);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.settings-overlay{position:fixed;inset:0;z-index:9999;width:100%;height:100%;height:100dvh;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-y:auto;overscroll-behavior:contain;padding:max(16px,env(safe-area-inset-top)) 14px max(16px,env(safe-area-inset-bottom));background:rgba(3,10,22,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);isolation:isolate}
 .settings-overlay[hidden]{display:none!important}
-.settings-sheet{width:100%;max-width:560px;max-height:82vh;overflow:auto;padding:20px 17px 18px;border:1px solid rgba(255,255,255,.85);border-radius:25px;background:#f8fbff;color:#18334f;box-shadow:0 22px 70px rgba(0,0,0,.28);animation:settingsIn .22s ease-out}
+.settings-sheet{position:relative;flex:0 0 auto;width:100%;max-width:560px;max-height:calc(100vh - 32px);overflow-y:auto;overscroll-behavior:contain;margin:auto;padding:22px 18px 20px;border:1px solid rgba(255,255,255,.85);border-radius:25px;background:#f8fbff;color:#18334f;box-shadow:0 22px 70px rgba(0,0,0,.34);animation:settingsIn .22s ease-out}
 @keyframes settingsIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .settings-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:7px}.settings-head h2{font-size:1.08rem;font-weight:900}.settings-head p{font-size:.68rem;color:#8297ac;margin-bottom:4px}.settings-close{width:34px;height:34px;border:0;border-radius:12px;background:rgba(80,120,155,.1);color:inherit;font-size:1.4rem}
 .settings-note{margin:0 0 14px;color:#7890a7;font-size:.72rem;line-height:1.8}.theme-options{display:grid;gap:9px}
@@ -110,6 +110,36 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;pa
 :root[data-theme="qandil"] .theme-choice,:root[data-theme="night"] .theme-choice{background:#1b3048;border-color:#334b64;color:#edf5fc}
 :root[data-theme="qandil"] .theme-choice[aria-pressed="true"],:root[data-theme="night"] .theme-choice[aria-pressed="true"]{background:#203d59;border-color:#71b8e5}
 :root[data-theme="qandil"] .theme-check,:root[data-theme="night"] .theme-check{background:#2c4560}
+
+:root[data-theme="ios"]{color-scheme:light;background:#2a6fd6;--ink:#fff;--muted:rgba(255,255,255,.78);--line:rgba(255,255,255,.2);--shadow:0 10px 28px rgba(12,42,90,.12)}
+:root[data-theme="ios"] body{background:linear-gradient(180deg,#2a6fd6 0%,#79b8f5 100%);background-attachment:fixed;color:#fff}
+:root[data-theme="ios"] header{background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.22);box-shadow:none;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+:root[data-theme="ios"] .location-icon,:root[data-theme="ios"] .icon-btn{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.2);color:#fff}
+:root[data-theme="ios"] .city-select,:root[data-theme="ios"] .location-info p,:root[data-theme="ios"] .section-title{color:#fff}
+:root[data-theme="ios"] .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:7px;min-height:0;padding:28px 8px 22px;border:0;border-radius:0;background:transparent;box-shadow:none;color:#fff}
+:root[data-theme="ios"] .hero-main{display:contents}
+:root[data-theme="ios"] .hero-main:before{display:none}
+:root[data-theme="ios"] .hero-icon{order:1;font-size:3.7rem;line-height:1;filter:drop-shadow(0 8px 18px rgba(0,0,0,.2))}
+:root[data-theme="ios"] .hero-temp{order:2;font-size:clamp(5.8rem,29vw,7.4rem);font-weight:200;line-height:1.02;letter-spacing:-5px;color:#fff;text-shadow:0 3px 18px rgba(0,0,0,.1)}
+:root[data-theme="ios"] .hero-desc{order:3;font-size:1.15rem;color:#fff}
+:root[data-theme="ios"] .hero-feels{order:4;color:rgba(255,255,255,.88)}
+:root[data-theme="ios"] .stat,:root[data-theme="ios"] .chart-card,:root[data-theme="ios"] .hourly-scroll,:root[data-theme="ios"] .daily-list,:root[data-theme="ios"] .sun-card{background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.2);box-shadow:none;backdrop-filter:blur(22px) saturate(1.25);-webkit-backdrop-filter:blur(22px) saturate(1.25)}
+:root[data-theme="ios"] .stat-label,:root[data-theme="ios"] .stat-value .unit,:root[data-theme="ios"] .hour-time,:root[data-theme="ios"] .day-name small,:root[data-theme="ios"] .day-bar-wrap,:root[data-theme="ios"] .sun-label{color:rgba(255,255,255,.78)}
+:root[data-theme="ios"] .stat-value,:root[data-theme="ios"] .hour-temp,:root[data-theme="ios"] .day-name,:root[data-theme="ios"] .day-temps .max,:root[data-theme="ios"] .sun-time{color:#fff}
+:root[data-theme="ios"] .hour-card{background:transparent;border-color:rgba(255,255,255,.2);color:#fff;box-shadow:none}
+:root[data-theme="ios"] .hour-card.now{background:rgba(255,255,255,.16)}
+:root[data-theme="ios"] .day-row{border-color:rgba(255,255,255,.2)}
+:root[data-theme="ios"] .day-bar{background:rgba(0,0,0,.18)}
+:root[data-theme="ios"] .day-temps .min{color:rgba(255,255,255,.65)}
+:root[data-theme="ios"] .section-title:after{background:linear-gradient(90deg,rgba(255,255,255,.28),transparent)}
+:root[data-theme="ios"] footer{border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.7)}
+:root[data-theme="ios"] footer b{color:#fff}
+:root[data-theme="ios"] .settings-sheet{background:rgba(18,49,91,.97);border-color:rgba(255,255,255,.24);color:#fff}
+:root[data-theme="ios"] .settings-note,:root[data-theme="ios"] .theme-choice-copy small{color:rgba(255,255,255,.72)}
+:root[data-theme="ios"] .theme-choice{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);color:#fff}
+:root[data-theme="ios"] .theme-choice[aria-pressed="true"]{background:rgba(255,255,255,.2);border-color:#a9d8ff}
+:root[data-theme="ios"] .theme-check{background:rgba(255,255,255,.14)}
+
 @media(prefers-color-scheme:dark){:root[data-theme="auto"]{color-scheme:dark;background:#07111f}:root[data-theme="auto"] body{background:linear-gradient(160deg,#07111f,#10233b 60%,#0a1422);color:#edf5ff}:root[data-theme="auto"] header{background:rgba(17,31,51,.92);border-color:#2a4058}:root[data-theme="auto"] .city-select{color:#edf5ff}:root[data-theme="auto"] .location-info p,:root[data-theme="auto"] .section-title{color:#a8bdd1}:root[data-theme="auto"] .location-icon,:root[data-theme="auto"] .icon-btn{background:#1b3048;border-color:#334b64;color:#eaf4ff}:root[data-theme="auto"] .hero{background:linear-gradient(135deg,#214b70,#172d4c 70%,#14233a)}:root[data-theme="auto"] .stat,:root[data-theme="auto"] .chart-card,:root[data-theme="auto"] .hourly-scroll,:root[data-theme="auto"] .daily-list,:root[data-theme="auto"] .sun-card{background:#172a40;border-color:#2b425b}:root[data-theme="auto"] .stat-label,:root[data-theme="auto"] .stat-value .unit,:root[data-theme="auto"] .hour-time,:root[data-theme="auto"] .day-name small,:root[data-theme="auto"] .day-bar-wrap,:root[data-theme="auto"] .sun-label{color:#9bb1c7}:root[data-theme="auto"] .stat-value,:root[data-theme="auto"] .day-name,:root[data-theme="auto"] .day-temps .max,:root[data-theme="auto"] .sun-time,:root[data-theme="auto"] .hour-temp{color:#f2f7fd}:root[data-theme="auto"] .day-row{border-color:#2a4058}:root[data-theme="auto"] .day-bar{background:#2a4058}:root[data-theme="auto"] footer{border-color:#2a4058;color:#8ea5bc}}
 @media(max-width:560px){:root[data-theme="qandil"] .hero{padding:18px 4px 12px}:root[data-theme="qandil"] .hero-temp{font-size:clamp(5.8rem,29vw,7.4rem)}}
 @media(prefers-reduced-motion:reduce){:root[data-theme="qandil"] body:before{animation:none}}
@@ -149,6 +179,7 @@ body = r"""<body>
 <div class="settings-head"><div><p>شخصی‌سازی قندیل</p><h2 id="settingsTitle">انتخاب ظاهر برنامه</h2></div><button id="settingsClose" class="settings-close" aria-label="بستن تنظیمات">×</button></div>
 <p class="settings-note">هر زمان خواستی می‌توانی پوسته را عوض کنی. انتخابت ذخیره می‌شود و اطلاعات آب‌وهوا دوباره بارگیری نمی‌شوند.</p>
 <div class="theme-options">
+<button class="theme-choice" type="button" data-theme-choice="ios" aria-pressed="false"><span class="theme-preview preview-ios"></span><span class="theme-choice-copy"><b>آسمان آبی</b><small>طراحی شیشه‌ای آبی بر پایهٔ فایل جدید</small></span><span class="theme-check">✓</span></button>
 <button class="theme-choice" type="button" data-theme-choice="qandil" aria-pressed="false"><span class="theme-preview"></span><span class="theme-choice-copy"><b>قندیل پویا</b><small>طراحی جدید با پس‌زمینهٔ آسمانی و کارت‌های شیشه‌ای</small></span><span class="theme-check">✓</span></button>
 <button class="theme-choice" type="button" data-theme-choice="classic" aria-pressed="false"><span class="theme-preview preview-classic"></span><span class="theme-choice-copy"><b>آسمانی روشن</b><small>ظاهر روشن و مرتب نسخهٔ قبلی</small></span><span class="theme-check">✓</span></button>
 <button class="theme-choice" type="button" data-theme-choice="night" aria-pressed="false"><span class="theme-preview preview-night"></span><span class="theme-choice-copy"><b>شب قندیل</b><small>حالت تیره با کارت‌های ساده و خوانا</small></span><span class="theme-check">✓</span></button>
@@ -160,17 +191,17 @@ body = r"""<body>
 
 theme_script = r"""<script>
 (function(){
-  var KEY='qandil-weather-theme-v1',allowed=['qandil','classic','night','auto'];
+  var KEY='qandil-weather-theme-v1',allowed=['ios','qandil','classic','night','auto'];
   var root=document.documentElement,overlay=document.getElementById('settingsOverlay');
   var openBtn=document.getElementById('settingsBtn'),closeBtn=document.getElementById('settingsClose');
   var choices=Array.prototype.slice.call(document.querySelectorAll('[data-theme-choice]'));
   function apply(theme,save){
-    if(allowed.indexOf(theme)<0)theme='qandil';
+    if(allowed.indexOf(theme)<0)theme='ios';
     root.setAttribute('data-theme',theme);
     if(save){try{localStorage.setItem(KEY,theme);}catch(e){}}
     choices.forEach(function(btn){btn.setAttribute('aria-pressed',btn.getAttribute('data-theme-choice')===theme?'true':'false');});
     var meta=document.querySelector('meta[name="theme-color"]');
-    if(meta)meta.content=theme==='qandil'?'#0b1628':theme==='night'?'#07111f':theme==='auto'?'#102238':'#edf5fc';
+    if(meta)meta.content=theme==='ios'?'#2a6fd6':theme==='qandil'?'#0b1628':theme==='night'?'#07111f':theme==='auto'?'#102238':'#edf5fc';
   }
   function open(){overlay.hidden=false;document.body.style.overflow='hidden';}
   function close(){overlay.hidden=true;document.body.style.overflow='';}
@@ -178,7 +209,7 @@ theme_script = r"""<script>
   overlay.addEventListener('click',function(e){if(e.target===overlay)close();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!overlay.hidden)close();});
   choices.forEach(function(btn){btn.addEventListener('click',function(){apply(btn.getAttribute('data-theme-choice'),true);});});
-  var saved='qandil';try{saved=localStorage.getItem(KEY)||'qandil';}catch(e){}
+  var saved='ios';try{saved=localStorage.getItem(KEY)||'ios';}catch(e){}
   apply(saved,false);
 })();
 </script>"""
