@@ -6,6 +6,7 @@ on:
     paths:
       - 'PiranshahrWeather-GitHub.zip'
       - 'redesign-weather.py'
+      - 'weather-ios.html'
       - '.github/workflows/build-apk.yml'
       - 'package.json'
       - 'src/**'
