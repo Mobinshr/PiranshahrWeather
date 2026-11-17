@@ -132,9 +132,8 @@ function maybeNotifyRain(name,d,startIndex){
   let sent=false;
   try{
     const bridge=window.AndroidBridge;
-    if(bridge){
-      const method=['showRainNotification','showNotification','notifyRain','notify'].find(k=>typeof bridge[k]==='function');
-      if(method){bridge[method](title,body);sent=true;}
+    if(bridge&&typeof bridge.showNativeNotification==='function'){
+      sent=bridge.showNativeNotification(title,body,'qandil-rain-'+name+'-'+new Date().toISOString().slice(0,10))===true;
     }
   }catch(e){}
   if(!sent&&'Notification' in window&&Notification.permission==='granted'){
@@ -179,7 +178,7 @@ function render(d,name){
 }
 function onScroll(){const p=Math.min(Math.max((scrollY-70)/110,0),1);$('mini').style.opacity=p;$('hero').style.opacity=1-p*.9}
 let scrollQueued=false;addEventListener('scroll',()=>{if(scrollQueued)return;scrollQueued=true;requestAnimationFrame(()=>{onScroll();scrollQueued=false})},{passive:true});
-document.addEventListener('click',async e=>{if(e.target.id!=='rainPermission')return;try{if('Notification' in window){const p=await Notification.requestPermission();if(p==='granted')e.target.textContent='اعلان فعال شد';else e.target.textContent='اجازه داده نشد';}else{e.target.textContent='اعلان سیستم پشتیبانی نمی‌شود';}}catch(err){e.target.textContent='فعال‌سازی ممکن نشد';}});
+document.addEventListener('click',async e=>{if(e.target.id!=='rainPermission')return;try{if(window.AndroidBridge&&typeof AndroidBridge.requestNotificationPermission==='function'){AndroidBridge.requestNotificationPermission();e.target.textContent='درخواست مجوز اعلان ارسال شد';}else if('Notification' in window){const p=await Notification.requestPermission();e.target.textContent=p==='granted'?'اعلان فعال شد':'اجازه داده نشد';}else{e.target.textContent='اعلان سیستم پشتیبانی نمی‌شود';}}catch(err){e.target.textContent='فعال‌سازی ممکن نشد';}});
 let tm,searchController,searchSeq=0;
 function showSearchMessage(message){const s=$('sug');s.replaceChildren();const li=document.createElement('li');li.textContent=message;li.style.cursor='default';s.append(li);s.hidden=false}
 $('q').addEventListener('input',e=>{
