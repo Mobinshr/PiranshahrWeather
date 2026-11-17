@@ -13,6 +13,7 @@ if missing:
 
 html = html_path.read_text(encoding="utf-8")
 manifest = manifest_path.read_text(encoding="utf-8")
+activity = activity_path.read_text(encoding="utf-8")
 gradle = gradle_path.read_text(encoding="utf-8")
 checks = {
     "Persian RTL HTML is installed": 'lang="fa" dir="rtl"' in html,
@@ -21,6 +22,7 @@ checks = {
     "Iran-only city search is enabled": "countryCode=IR" in html,
     "city search uses live geocoding": "geocoding-api.open-meteo.com/v1/search" in html,
     "GPS location flow is present": "navigator.geolocation.getCurrentPosition" in html,
+    "WebView GPS permission handling is present": "geolocationEnabled = true" in activity and "onGeolocationPermissionsShowPrompt" in activity and "requestCode == 1002" in activity,
     "weather uses selected coordinates": "api.open-meteo.com/v1/forecast?latitude=" in html,
     "hourly and daily rainfall data are requested": "precipitation_probability" in html and "precipitation_sum" in html,
     "rain alert uses native Android bridge": "showNativeNotification" in html and "requestNotificationPermission" in html,
