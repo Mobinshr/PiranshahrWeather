@@ -84,6 +84,7 @@ body{font-family:SysEmoji,Vazirmatn,-apple-system,system-ui,sans-serif;color:#ff
 </div>
 <script>
 const fa=n=>Math.round(n).toLocaleString('fa-IR');
+const fa1=n=>Number(n||0).toLocaleString('fa-IR',{maximumFractionDigits:1});
 const dg=s=>String(s).replace(/\d/g,x=>'۰۱۲۳۴۵۶۷۸۹'[x]);
 const W={0:['آسمان صاف','☀️','c'],1:['کم‌ابر','🌤️','c'],2:['نیمه‌ابری','⛅','p'],3:['ابری','☁️','o'],45:['مه‌آلود','🌫️','o'],48:['مه یخی','🌫️','o'],
 51:['نم‌نم باران','🌦️','r'],53:['نم‌نم باران','🌦️','r'],55:['نم‌نم باران','🌦️','r'],61:['باران ملایم','🌧️','r'],63:['باران','🌧️','r'],65:['باران شدید','🌧️','r'],
@@ -154,7 +155,7 @@ function render(d,name){
   $('days').innerHTML=D.time.map((t,j)=>{
     const lo=D.temperature_2m_min[j],hi=D.temperature_2m_max[j],l=(lo-mn)/sp*100,wd=Math.max((hi-lo)/sp*100,5);
     const dot=j?'':`<s style="left:${Math.min(Math.max((c.temperature_2m-mn)/sp*100,0),100)}%"></s>`;
-    return `<div class="day"><b>${j?dn[new Date(t+'T12:00').getDay()]:'امروز'}<small>☔ ${fa(D.precipitation_probability_max[j]||0)}٪</small></b><span class="i">${w(D.weather_code[j])[1]}</span><span class="lo">${fa(lo)}°</span><div class="bar"><u style="left:${l}%;width:${wd}%;background:linear-gradient(90deg,${tc(lo)},${tc(hi)})"></u>${dot}</div><span class="hi">${fa(hi)}°</span></div>`}).join('');
+    return `<div class="day"><b>${j?dn[new Date(t+'T12:00').getDay()]:'امروز'}<small>☔ ${fa(D.precipitation_probability_max[j]||0)}٪ · ${fa1(D.precipitation_sum[j]||0)} mm</small></b><span class="i">${w(D.weather_code[j])[1]}</span><span class="lo">${fa(lo)}°</span><div class="bar"><u style="left:${l}%;width:${wd}%;background:linear-gradient(90deg,${tc(lo)},${tc(hi)})"></u>${dot}</div><span class="hi">${fa(hi)}°</span></div>`}).join('');
   const tm=s=>dg(+s.slice(11,13))+':'+dg(s.slice(14,16));
   const uv=D.uv_index_max[0],ul=uv<3?'کم':uv<6?'متوسط':uv<8?'زیاد':uv<11?'خیلی زیاد':'شدید';
   const ws=c.wind_speed_10m,df=c.apparent_temperature-c.temperature_2m,hm=c.relative_humidity_2m;
@@ -165,7 +166,7 @@ function render(d,name){
   const rainIndex=rainHours.findIndex(v=>v>=50);
   const rainTime=rainIndex>=0?tm(d.hourly.time[i+rainIndex]):'در ۱۲ ساعت آینده';
   const rainAmount=rainAmounts.reduce((a,v)=>a+(v||0),0);
-  $('rain').innerHTML=`<div class="rain-summary"><span>${maxRain>=50?'احتمال بارش در ساعات آینده':'احتمال بارش در ۱۲ ساعت آینده'}</span><strong>${fa(maxRain)}٪</strong></div><div class="rain-track"><i style="width:${Math.min(maxRain,100)}%"></i></div><div class="rain-meta">${rainIndex>=0?'زمان احتمالی شروع: '+rainTime:'بارش قابل‌توجهی پیش‌بینی نشده'} · مجموع بارش پیش‌بینی‌شده: ${fa(rainAmount)} میلی‌متر</div><div class="rain-alert"><span>🔔 اعلان بارش</span><button type="button" id="rainPermission">فعال‌سازی اعلان</button></div>`;
+  $('rain').innerHTML=`<div class="rain-summary"><span>${maxRain>=50?'احتمال بارش در ساعات آینده':'احتمال بارش در ۱۲ ساعت آینده'}</span><strong>${fa(maxRain)}٪</strong></div><div class="rain-track"><i style="width:${Math.min(maxRain,100)}%"></i></div><div class="rain-meta">${rainIndex>=0?'زمان احتمالی شروع: '+rainTime:'بارش قابل‌توجهی پیش‌بینی نشده'} · مجموع بارش پیش‌بینی‌شده: ${fa1(rainAmount)} میلی‌متر</div><div class="rain-alert"><span>🔔 اعلان بارش</span><button type="button" id="rainPermission">فعال‌سازی اعلان</button></div>`;
   maybeNotifyRain(name,d,i);
   $('stats').innerHTML=
    cd('☀️ شاخص UV',`<div class="big">${fa(uv)}</div><div class="lvl">${ul}</div><div class="uv"><s style="left:${Math.min(uv/11,1)*100}%"></s></div>`,0,'بیشینه امروز')+
