@@ -1,4 +1,4 @@
-name: Build Piranshahr Weather APK v3.0.0
+name: Build Qandil Weather APK v3.1.0
 on:
   push:
     branches:
@@ -7,6 +7,7 @@ on:
       - 'PiranshahrWeather-GitHub.zip'
       - 'redesign-weather.py'
       - 'weather-ios.html'
+      - 'qandil_icon.xml'
       - '.github/workflows/build-apk.yml'
       - 'package.json'
       - 'src/**'
@@ -42,9 +43,27 @@ jobs:
           test -f piranshahr-weather-android/settings.gradle.kts
           test -f piranshahr-weather-android/app/src/main/AndroidManifest.xml
 
-      - name: Apply complete modern weather redesign
+      - name: Install Qandil weather interface
         working-directory: piranshahr-weather-android
         run: python3 ../redesign-weather.py
+
+      - name: Apply Qandil app branding and launcher icon
+        working-directory: piranshahr-weather-android
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          manifest = Path("app/src/main/AndroidManifest.xml")
+          text = manifest.read_text(encoding="utf-8")
+          text = re.sub(r'android:label="[^"]*"', 'android:label="آب‌وهوای قندیل"', text, count=1)
+          text = re.sub(r'android:icon="[^"]*"', 'android:icon="@drawable/ic_launcher"', text, count=1)
+          text = re.sub(r'android:roundIcon="[^"]*"', 'android:roundIcon="@drawable/ic_launcher"', text, count=1)
+          manifest.write_text(text, encoding="utf-8")
+          icon = Path("app/src/main/res/drawable/ic_launcher.xml")
+          icon.parent.mkdir(parents=True, exist_ok=True)
+          icon.write_text(Path("../qandil_icon.xml").read_text(encoding="utf-8"), encoding="utf-8")
+          print("Qandil app name and launcher icon installed.")
+          PY
 
       - name: Configure Android location permissions
         working-directory: piranshahr-weather-android
@@ -71,6 +90,16 @@ jobs:
           print("Android location permissions declared.")
           PY
 
+      - name: Inspect native notification bridge (temporary)
+        working-directory: piranshahr-weather-android
+        run: |
+          echo '--- AndroidBridge.kt ---'
+          sed -n '1,240p' app/src/main/java/com/example/weather/AndroidBridge.kt
+          echo '--- MainActivity.kt ---'
+          sed -n '1,260p' app/src/main/java/com/example/weather/MainActivity.kt
+          echo '--- NotificationHelper.kt ---'
+          sed -n '1,240p' app/src/main/java/com/example/weather/NotificationHelper.kt
+
       - name: Validate replacement weather app
         working-directory: piranshahr-weather-android
         run: python3 ../tools/validate_project.py
@@ -86,12 +115,12 @@ jobs:
           if gradle_file is None:
               raise SystemExit("App module Gradle file not found")
           content = gradle_file.read_text()
-          content, code_count = re.subn(r"(?m)(\bversionCode\s*(?:=\s*)?)\d+", r'\g<1>16', content, count=1)
-          content, name_count = re.subn(r"""(?m)(\bversionName\s*(?:=\s*)?)["'][^"']*["']""", r'\g<1>"3.0.0"', content, count=1)
+          content, code_count = re.subn(r"(?m)(\bversionCode\s*(?:=\s*)?)\d+", r'\g<1>17', content, count=1)
+          content, name_count = re.subn(r"""(?m)(\bversionName\s*(?:=\s*)?)["'][^"']*["']""", r'\g<1>"3.1.0"', content, count=1)
           if code_count != 1 or name_count != 1:
               raise SystemExit(f"Could not safely update version fields in {gradle_file}")
           gradle_file.write_text(content)
-          print(f"Configured {gradle_file}: versionCode=16, versionName=3.0.0")
+          print(f"Configured {gradle_file}: versionCode=17, versionName=3.1.0")
           PY
 
       - name: Configure permanent release signing
@@ -212,7 +241,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.app_version.outputs.tag }}
-          name: آب‌وهوای پیرانشهر v${{ steps.app_version.outputs.name }}
+          name: آب‌وهوای قندیل v${{ steps.app_version.outputs.name }}
           body: |
             ## آب‌وهوای قندیل v${{ steps.app_version.outputs.name }}
 
