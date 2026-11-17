@@ -123,17 +123,19 @@ async function load(lat,lon,name,{force=false}={}){
 }
 function maybeNotifyRain(name,d,startIndex){
   const probs=d.hourly.precipitation_probability.slice(startIndex,startIndex+6);
-  const idx=probs.findIndex(v=>Number(v)>=65);
+  const amounts=d.hourly.precipitation.slice(startIndex,startIndex+6);
+  const idx=probs.findIndex((v,j)=>Number(v)>=60||Number(amounts[j]||0)>=0.2);
   if(idx<0)return;
   const key='qandil-rain-'+name+'-'+new Date().toISOString().slice(0,10);
   try{if(localStorage.getItem(key))return}catch(e){}
   const title='بارش در پیش است ☔';
-  const body=`برای ${name} در ساعات آینده احتمال بارش ${fa(probs[idx])}٪ پیش‌بینی شده است.`;
+  const at=new Date(d.hourly.time[startIndex+idx]).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'});
+  const body=`برای ${name} حدود ساعت ${at} احتمال بارش ${fa(probs[idx])}٪ و بارش ${fa1(amounts[idx])} میلی‌متر پیش‌بینی شده است.`;
   let sent=false;
   try{
     const bridge=window.AndroidBridge;
     if(bridge&&typeof bridge.showNativeNotification==='function'){
-      sent=bridge.showNativeNotification(title,body,'qandil-rain-'+name+'-'+new Date().toISOString().slice(0,10))===true;
+      sent=bridge.showNativeNotification(title,body,key)===true;
     }
   }catch(e){}
   if(!sent&&'Notification' in window&&Notification.permission==='granted'){
