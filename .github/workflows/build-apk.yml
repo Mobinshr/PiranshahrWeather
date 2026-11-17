@@ -95,20 +95,95 @@ jobs:
           print("Android location permissions declared.")
           PY
 
-      - name: Update Qandil native labels and notification channel
+      - name: Configure native Qandil labels, notifications, and GPS
         working-directory: piranshahr-weather-android
         run: |
           python3 - <<'PY'
           from pathlib import Path
+
           activity = Path("app/src/main/java/com/example/weather/MainActivity.kt")
           text = activity.read_text(encoding="utf-8")
           text = text.replace("آب و هوای پیرانشهر", "آب‌وهوای قندیل")
+
+          imports = [
+              "import android.Manifest",
+              "import android.app.Activity",
+              "import android.content.pm.PackageManager",
+              "import android.webkit.GeolocationPermissions",
+              "import android.webkit.WebChromeClient",
+          ]
+          for item in imports:
+              if item not in text:
+                  text = text.replace("package com.example.weather\n", "package com.example.weather\n\n" + item + "\n", 1)
+
+          geo_object = """private object QandilGeoPermission {
+              var origin: String? = null
+              var callback: GeolocationPermissions.Callback? = null
+          }
+
+          """
+          if "private object QandilGeoPermission" not in text:
+              text = text.replace("class MainActivity : ComponentActivity() {", geo_object + "class MainActivity : ComponentActivity() {", 1)
+
+          permission_result = """    override fun onRequestPermissionsResult(
+              requestCode: Int,
+              permissions: Array<out String>,
+              grantResults: IntArray
+          ) {
+              super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+              if (requestCode == 1002) {
+                  val granted = grantResults.any { it == PackageManager.PERMISSION_GRANTED }
+                  QandilGeoPermission.callback?.invoke(QandilGeoPermission.origin ?: "", granted, false)
+                  QandilGeoPermission.callback = null
+                  QandilGeoPermission.origin = null
+              }
+          }
+
+          """
+          if "requestCode == 1002" not in text:
+              text = text.replace("    private fun configureSystemBars() {", permission_result + "    private fun configureSystemBars() {", 1)
+
+          text = text.replace(
+              "                        javaScriptEnabled = true",
+              "                        javaScriptEnabled = true\n                        geolocationEnabled = true",
+              1
+          )
+          chrome = """                    webChromeClient = object : WebChromeClient() {
+                          override fun onGeolocationPermissionsShowPrompt(
+                              origin: String?,
+                              callback: GeolocationPermissions.Callback?
+                          ) {
+                              val activity = context as? Activity
+                              if (activity == null || callback == null) {
+                                  callback?.invoke(origin ?: "", false, false)
+                                  return
+                              }
+                              val fine = activity.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                              val coarse = activity.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                              if (fine || coarse) {
+                                  callback.invoke(origin ?: "", true, false)
+                              } else {
+                                  QandilGeoPermission.origin = origin
+                                  QandilGeoPermission.callback = callback
+                                  activity.requestPermissions(
+                                      arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                                      1002
+                                  )
+                              }
+                          }
+                      }
+
+          """
+          if "onGeolocationPermissionsShowPrompt" not in text:
+              text = text.replace("                    // Bridge to native Android APIs", chrome + "                    // Bridge to native Android APIs", 1)
+
           activity.write_text(text, encoding="utf-8")
+
           helper = Path("app/src/main/java/com/example/weather/NotificationHelper.kt")
-          text = helper.read_text(encoding="utf-8")
-          text = text.replace("اعلان‌های هشدار بارش و تغییرات وضعیت جوی پیرانشهر", "اعلان‌های هشدار بارش و تغییرات وضعیت جوی")
-          helper.write_text(text, encoding="utf-8")
-          print("Native splash label and notification channel updated for Qandil.")
+          helper_text = helper.read_text(encoding="utf-8")
+          helper_text = helper_text.replace("اعلان‌های هشدار بارش و تغییرات وضعیت جوی پیرانشهر", "اعلان‌های هشدار بارش و تغییرات وضعیت جوی")
+          helper.write_text(helper_text, encoding="utf-8")
+          print("Qandil splash branding, native rain alerts, and WebView GPS permissions configured.")
           PY
 
       - name: Validate replacement weather app
