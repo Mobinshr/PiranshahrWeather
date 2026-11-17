@@ -22,8 +22,11 @@ checks = {
     "city search uses live geocoding": "geocoding-api.open-meteo.com/v1/search" in html,
     "GPS location flow is present": "navigator.geolocation.getCurrentPosition" in html,
     "weather uses selected coordinates": "api.open-meteo.com/v1/forecast?latitude=" in html,
+    "hourly and daily rainfall data are requested": "precipitation_probability" in html and "precipitation_sum" in html,
+    "rain alert uses native Android bridge": "showNativeNotification" in html and "requestNotificationPermission" in html,
     "Android internet permission is retained": "android.permission.INTERNET" in manifest,
     "Android location permission is declared": "android.permission.ACCESS_FINE_LOCATION" in manifest or "android.permission.ACCESS_COARSE_LOCATION" in manifest,
+    "Android notification permission is declared": "android.permission.POST_NOTIFICATIONS" in manifest,
     "Qandil launcher icon is installed": 'android:icon="@drawable/ic_launcher"' in manifest,
     "existing Android application ID is retained": 'applicationId = "com.example.weather"' in gradle,
 }
