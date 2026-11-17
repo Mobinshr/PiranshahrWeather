@@ -5,7 +5,8 @@ manifest_path = root / "app/src/main/AndroidManifest.xml"
 activity_path = root / "app/src/main/java/com/example/weather/MainActivity.kt"
 html_path = root / "app/src/main/assets/weather.html"
 gradle_path = root / "app/build.gradle.kts"
-required = [manifest_path, activity_path, html_path, gradle_path]
+icon_path = root / "app/src/main/res/drawable/ic_launcher.xml"
+required = [manifest_path, activity_path, html_path, gradle_path, icon_path]
 missing = [str(p.relative_to(root)) for p in required if not p.is_file()]
 if missing:
     raise SystemExit("Required Android project files are missing: " + ", ".join(missing))
@@ -15,12 +16,15 @@ manifest = manifest_path.read_text(encoding="utf-8")
 gradle = gradle_path.read_text(encoding="utf-8")
 checks = {
     "Persian RTL HTML is installed": 'lang="fa" dir="rtl"' in html,
+    "Qandil app branding is present": "آب‌وهوای قندیل" in html and 'android:label="آب‌وهوای قندیل"' in manifest,
+    "Rain probability forecast is present": "precipitation_probability" in html and "precipitation_sum" in html,
     "Iran-only city search is enabled": "countryCode=IR" in html,
     "city search uses live geocoding": "geocoding-api.open-meteo.com/v1/search" in html,
     "GPS location flow is present": "navigator.geolocation.getCurrentPosition" in html,
     "weather uses selected coordinates": "api.open-meteo.com/v1/forecast?latitude=" in html,
     "Android internet permission is retained": "android.permission.INTERNET" in manifest,
     "Android location permission is declared": "android.permission.ACCESS_FINE_LOCATION" in manifest or "android.permission.ACCESS_COARSE_LOCATION" in manifest,
+    "Qandil launcher icon is installed": 'android:icon="@drawable/ic_launcher"' in manifest,
     "existing Android application ID is retained": 'applicationId = "com.example.weather"' in gradle,
 }
 for label, passed in checks.items():
