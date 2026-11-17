@@ -102,7 +102,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;pa
 .theme-choice:active{transform:scale(.99)}.theme-choice[aria-pressed="true"]{border-color:#398bc4;box-shadow:0 0 0 2px rgba(57,139,196,.13);background:#f2f9ff}
 .theme-preview{width:48px;height:42px;flex:0 0 48px;border-radius:12px;border:1px solid rgba(0,0,0,.08);background:linear-gradient(145deg,#081326,#438fce);position:relative;overflow:hidden}
 .theme-preview:after{content:"";position:absolute;left:8px;right:8px;bottom:7px;height:9px;border-radius:7px;background:rgba(255,255,255,.72)}
-.preview-classic{background:linear-gradient(145deg,#f2f8fd,#c9e4f7)}.preview-night{background:linear-gradient(145deg,#07111f,#274969)}.preview-auto{background:linear-gradient(110deg,#edf5fc 0 50%,#14243a 50%)}
+.preview-ios{background:linear-gradient(145deg,#2a6fd6,#79b8f5)}.preview-classic{background:linear-gradient(145deg,#f2f8fd,#c9e4f7)}.preview-night{background:linear-gradient(145deg,#07111f,#274969)}.preview-auto{background:linear-gradient(110deg,#edf5fc 0 50%,#14243a 50%)}
 .theme-choice-copy{display:flex;flex:1;flex-direction:column;gap:3px}.theme-choice-copy b{font-size:.79rem}.theme-choice-copy small{font-size:.65rem;color:#8297ac;line-height:1.5}.theme-check{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:#e7f2fa;color:transparent;font-size:.75rem;font-weight:900}
 .theme-choice[aria-pressed="true"] .theme-check{background:#2e83c7;color:#fff}
 :root[data-theme="qandil"] .settings-sheet,:root[data-theme="night"] .settings-sheet{background:#14263d;border-color:#2c4560;color:#f1f7fd}
