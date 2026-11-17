@@ -126,10 +126,11 @@ function maybeNotifyRain(name,d,startIndex){
   const amounts=d.hourly.precipitation.slice(startIndex,startIndex+6);
   const idx=probs.findIndex((v,j)=>Number(v)>=60||Number(amounts[j]||0)>=0.2);
   if(idx<0)return;
-  const key='qandil-rain-'+name+'-'+new Date().toISOString().slice(0,10);
+  const day=d.current.time.slice(0,10);
+  const key='qandil-rain-'+name+'-'+day;
   try{if(localStorage.getItem(key))return}catch(e){}
   const title='بارش در پیش است ☔';
-  const at=new Date(d.hourly.time[startIndex+idx]).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'});
+  const at=dg(d.hourly.time[startIndex+idx].slice(11,16));
   const body=`برای ${name} حدود ساعت ${at} احتمال بارش ${fa(probs[idx])}٪ و بارش ${fa1(amounts[idx])} میلی‌متر پیش‌بینی شده است.`;
   let sent=false;
   try{
