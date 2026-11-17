@@ -96,10 +96,29 @@ function tc(t){let i=0;while(i<ST.length-2&&t>ST[i+1][0])i++;const[a,A]=ST[i],[b
 const dn=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
 const $=id=>document.getElementById(id);
 const get=async (u,options={})=>{const r=await fetch(u,options);if(!r.ok)throw 0;return r.json()};
-async function load(lat,lon,name){
-  $('msg').hidden=false;$('msg').textContent='در حال دریافت اطلاعات…';$('app').hidden=true;
-  try{render(await get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,weather_code,precipitation_probability,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,sunrise,sunset,precipitation_probability_max,precipitation_sum,rain_sum,showers_sum&timezone=auto&forecast_days=7`),name)}
-  catch(e){$('msg').textContent='خطا در دریافت اطلاعات آب‌وهوا. اینترنت را بررسی کنید 📡'}
+let activePlace={lat:36.6959,lon:45.1413,name:'پیرانشهر'};
+let loadController=null,loadSequence=0;
+async function load(lat,lon,name,{force=false}={}){
+  activePlace={lat,lon,name};
+  const cacheKey=`qandil-weather-${lat.toFixed(3)}-${lon.toFixed(3)}`;
+  let cached=null;
+  try{cached=JSON.parse(localStorage.getItem(cacheKey)||'null')}catch(e){}
+  const cacheAge=cached?.saved?Date.now()-cached.saved:Infinity;
+  if(cached?.data){render(cached.data,name);if(cacheAge<10*60*1000&&!force)return;}
+  else{$('msg').hidden=false;$('msg').textContent='در حال دریافت اطلاعات…';$('app').hidden=true;}
+  if(loadController)loadController.abort();
+  loadController=new AbortController();
+  const seq=++loadSequence;
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,weather_code,precipitation_probability,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,sunrise,sunset,precipitation_probability_max,precipitation_sum,rain_sum,showers_sum&timezone=auto&forecast_days=7`;
+  try{
+    const data=await get(url,{signal:loadController.signal});
+    if(seq!==loadSequence)return;
+    render(data,name);
+    try{localStorage.setItem(cacheKey,JSON.stringify({saved:Date.now(),data}))}catch(e){}
+  }catch(e){
+    if(e.name==='AbortError')return;
+    if(!cached?.data){$('msg').hidden=false;$('msg').textContent='خطا در دریافت اطلاعات آب‌وهوا. اینترنت را بررسی کنید 📡';}
+  }
 }
 function maybeNotifyRain(name,d,startIndex){
   const probs=d.hourly.precipitation_probability.slice(startIndex,startIndex+6);
@@ -169,7 +188,7 @@ $('q').addEventListener('input',e=>{
   tm=setTimeout(async()=>{
     searchController=new AbortController();
     try{
-      const url=`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=20&language=fa&countryCode=IR&format=json`;
+      const url=`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=100&language=fa&countryCode=IR&format=json`;
       const r=await get(url,{signal:searchController.signal});
       if(seq!==searchSeq||$('q').value.trim()!==v)return;
       const s=$('sug');s.replaceChildren();
@@ -208,8 +227,7 @@ $('loc').onclick=()=>{
   },{enableHighAccuracy:true,timeout:18000,maximumAge:300000});
 };
 load(36.6959,45.1413,'پیرانشهر');
-let lastRefresh=Date.now();
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()-lastRefresh>30*60*1000){lastRefresh=Date.now();load(36.6959,45.1413,'پیرانشهر')}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')load(activePlace.lat,activePlace.lon,activePlace.name,{force:true})});
 </script>
 </body>
 </html>
