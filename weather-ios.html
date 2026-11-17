@@ -4,19 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2a6fd6">
-<title>آب‌وهوا</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;400;600&display=swap" rel="stylesheet">
+<title>آب‌وهوای قندیل</title>
 <style>
 :root{--top:#2a6fd6;--bot:#79b8f5}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 @font-face{font-family:SysEmoji;src:local("Apple Color Emoji"),local("Segoe UI Emoji"),local("Noto Color Emoji"),local("Twemoji Mozilla");unicode-range:U+00A9,U+00AE,U+200D,U+203C-3299,U+FE0F,U+1F000-1FAFF}
 body{font-family:SysEmoji,Vazirmatn,-apple-system,system-ui,sans-serif;color:#fff;min-height:100vh;background:linear-gradient(180deg,var(--top),var(--bot)) fixed;transition:background .6s}
 .wrap{max-width:520px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 40px}
-.search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);border-radius:12px;padding:0 12px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);border-radius:12px;padding:0 12px;border:1px solid rgba(255,255,255,.18);box-shadow:0 5px 16px rgba(0,0,0,.08)}
 .search input{flex:1;min-width:0;background:none;border:0;color:#fff;font:inherit;font-size:16px;padding:10px 0;outline:none}
 .search input::placeholder{color:rgba(255,255,255,.65)}
 .search button{background:none;border:0;font-size:18px;cursor:pointer;padding:4px}
-#sug{list-style:none;padding:0;margin-top:8px;background:rgba(20,30,50,.55);border-radius:14px;overflow:hidden;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+#sug{list-style:none;padding:0;margin-top:8px;background:rgba(20,30,50,.55);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.16)}
 #sug li{padding:12px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.15)}
 #sug li:last-child{border:0}
 :focus-visible{outline:2px solid #fff;outline-offset:2px;border-radius:8px}
@@ -28,7 +27,7 @@ body{font-family:SysEmoji,Vazirmatn,-apple-system,system-ui,sans-serif;color:#ff
 .temp{font-size:104px;font-weight:200;line-height:1.1;margin-top:2px;padding-right:.2em}
 .cond{font-size:20px;font-weight:600;text-shadow:0 1px 8px rgba(0,0,0,.12)}
 .hl{font-size:18px;margin-top:2px}
-.card{background:rgba(255,255,255,.17);border-radius:20px;padding:12px 16px 14px;margin-top:12px;backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3)}
+.card{background:rgba(255,255,255,.17);border-radius:20px;padding:12px 16px 14px;margin-top:12px;border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 18px rgba(0,0,0,.06)}
 .card h2{font-size:13px;font-weight:600;opacity:.72;margin-bottom:10px;display:flex;gap:6px;align-items:center}
 .card h2+.hr{margin:-4px 0 10px;border:0;border-top:1px solid rgba(255,255,255,.2)}
 .sum{font-size:14px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.2)}
@@ -45,7 +44,16 @@ body{font-family:SysEmoji,Vazirmatn,-apple-system,system-ui,sans-serif;color:#ff
 .bar u{position:absolute;top:0;bottom:0;border-radius:9px}
 .bar s{position:absolute;top:-1.5px;width:8px;height:8px;border-radius:50%;background:#fff;border:1.5px solid rgba(0,0,0,.35);margin-left:-4px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.grid .card{margin:0;min-height:158px;display:flex;flex-direction:column}
+ .grid .card{margin:0;min-height:158px;display:flex;flex-direction:column}
+.rain-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
+.rain-summary strong{font-size:27px;font-weight:600}
+.rain-track{height:6px;border-radius:8px;background:rgba(0,0,0,.18);overflow:hidden;margin:9px 0}
+.rain-track i{display:block;height:100%;border-radius:8px;background:#38c7f5}
+.rain-meta{font-size:12px;opacity:.85;line-height:1.8}
+.h small{display:block;font-size:10px;opacity:.78;margin-top:3px}
+.day b small{display:block;font-size:10px;color:#bcecff;font-weight:400;white-space:nowrap}
+.rain-alert{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rain-alert button{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;border-radius:10px;padding:8px 10px;font:inherit;font-size:12px}
 .big{font-size:34px;font-weight:400;line-height:1.2}
 .lvl{font-size:19px;font-weight:600}
 .note{font-size:13px;margin-top:auto;opacity:.9}
@@ -69,6 +77,7 @@ body{font-family:SysEmoji,Vazirmatn,-apple-system,system-ui,sans-serif;color:#ff
       <div class="hl" id="hl"></div>
     </section>
     <section class="card"><h2>🕐 پیش‌بینی ساعتی</h2><hr class="hr"><div class="scroll"><div class="hours" id="hours"></div></div></section>
+    <section class="card"><h2>☔ پیش‌بینی بارش</h2><hr class="hr"><div id="rain"></div></section>
     <section class="card"><h2>📅 پیش‌بینی ۷ روزه</h2><hr class="hr"><div id="days"></div></section>
     <div class="grid" id="stats"></div>
   </main>
@@ -89,8 +98,29 @@ const $=id=>document.getElementById(id);
 const get=async (u,options={})=>{const r=await fetch(u,options);if(!r.ok)throw 0;return r.json()};
 async function load(lat,lon,name){
   $('msg').hidden=false;$('msg').textContent='در حال دریافت اطلاعات…';$('app').hidden=true;
-  try{render(await get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,sunrise,sunset,precipitation_probability_max&timezone=auto&forecast_days=7`),name)}
+  try{render(await get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,weather_code,precipitation_probability,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,sunrise,sunset,precipitation_probability_max,precipitation_sum,rain_sum,showers_sum&timezone=auto&forecast_days=7`),name)}
   catch(e){$('msg').textContent='خطا در دریافت اطلاعات آب‌وهوا. اینترنت را بررسی کنید 📡'}
+}
+function maybeNotifyRain(name,d,startIndex){
+  const probs=d.hourly.precipitation_probability.slice(startIndex,startIndex+6);
+  const idx=probs.findIndex(v=>Number(v)>=65);
+  if(idx<0)return;
+  const key='qandil-rain-'+name+'-'+new Date().toISOString().slice(0,10);
+  try{if(localStorage.getItem(key))return}catch(e){}
+  const title='بارش در پیش است ☔';
+  const body=`برای ${name} در ساعات آینده احتمال بارش ${fa(probs[idx])}٪ پیش‌بینی شده است.`;
+  let sent=false;
+  try{
+    const bridge=window.AndroidBridge;
+    if(bridge){
+      const method=['showRainNotification','showNotification','notifyRain','notify'].find(k=>typeof bridge[k]==='function');
+      if(method){bridge[method](title,body);sent=true;}
+    }
+  }catch(e){}
+  if(!sent&&'Notification' in window&&Notification.permission==='granted'){
+    try{new Notification(title,{body});sent=true}catch(e){}
+  }
+  if(sent){try{localStorage.setItem(key,'1')}catch(e){}}
 }
 function render(d,name){
   const c=d.current,[txt,ico,k]=w(c.weather_code),sky=SKY[k][c.is_day?'d':'n'],D=d.daily;
@@ -100,16 +130,24 @@ function render(d,name){
   $('hl').textContent=`بیشینه ${fa(D.temperature_2m_max[0])}°  کمینه ${fa(D.temperature_2m_min[0])}°`;
   $('mc').textContent=name;$('mt').textContent=`${fa(c.temperature_2m)}° | ${txt}`;
   const now=c.time.slice(0,13);let i=d.hourly.time.findIndex(t=>t.slice(0,13)===now);if(i<0)i=0;
-  $('hours').innerHTML=d.hourly.time.slice(i,i+24).map((t,j)=>`<div class="h"><span>${j?dg(+t.slice(11,13)):'اکنون'}</span><i>${w(d.hourly.weather_code[i+j])[1]}</i>${fa(d.hourly.temperature_2m[i+j])}°</div>`).join('');
+  $('hours').innerHTML=d.hourly.time.slice(i,i+24).map((t,j)=>`<div class="h"><span>${j?dg(+t.slice(11,13)):'اکنون'}</span><i>${w(d.hourly.weather_code[i+j])[1]}</i>${fa(d.hourly.temperature_2m[i+j])}°<small>☔ ${fa(d.hourly.precipitation_probability[i+j]||0)}٪</small></div>`).join('');
   const mn=Math.min(...D.temperature_2m_min),mx=Math.max(...D.temperature_2m_max),sp=(mx-mn)||1;
   $('days').innerHTML=D.time.map((t,j)=>{
     const lo=D.temperature_2m_min[j],hi=D.temperature_2m_max[j],l=(lo-mn)/sp*100,wd=Math.max((hi-lo)/sp*100,5);
     const dot=j?'':`<s style="left:${Math.min(Math.max((c.temperature_2m-mn)/sp*100,0),100)}%"></s>`;
-    return `<div class="day"><b>${j?dn[new Date(t+'T12:00').getDay()]:'امروز'}</b><span class="i">${w(D.weather_code[j])[1]}</span><span class="lo">${fa(lo)}°</span><div class="bar"><u style="left:${l}%;width:${wd}%;background:linear-gradient(90deg,${tc(lo)},${tc(hi)})"></u>${dot}</div><span class="hi">${fa(hi)}°</span></div>`}).join('');
+    return `<div class="day"><b>${j?dn[new Date(t+'T12:00').getDay()]:'امروز'}<small>☔ ${fa(D.precipitation_probability_max[j]||0)}٪</small></b><span class="i">${w(D.weather_code[j])[1]}</span><span class="lo">${fa(lo)}°</span><div class="bar"><u style="left:${l}%;width:${wd}%;background:linear-gradient(90deg,${tc(lo)},${tc(hi)})"></u>${dot}</div><span class="hi">${fa(hi)}°</span></div>`}).join('');
   const tm=s=>dg(+s.slice(11,13))+':'+dg(s.slice(14,16));
   const uv=D.uv_index_max[0],ul=uv<3?'کم':uv<6?'متوسط':uv<8?'زیاد':uv<11?'خیلی زیاد':'شدید';
   const ws=c.wind_speed_10m,df=c.apparent_temperature-c.temperature_2m,hm=c.relative_humidity_2m;
   const cd=(h,b,x,n)=>`<div class="card"><h2>${h}</h2>${b}<div class="note">${n}</div></div>`;
+  const rainHours=d.hourly.precipitation_probability.slice(i,i+12);
+  const rainAmounts=d.hourly.precipitation.slice(i,i+12);
+  const maxRain=Math.max(0,...rainHours);
+  const rainIndex=rainHours.findIndex(v=>v>=50);
+  const rainTime=rainIndex>=0?tm(d.hourly.time[i+rainIndex]):'در ۱۲ ساعت آینده';
+  const rainAmount=rainAmounts.reduce((a,v)=>a+(v||0),0);
+  $('rain').innerHTML=`<div class="rain-summary"><span>${maxRain>=50?'احتمال بارش در ساعات آینده':'احتمال بارش در ۱۲ ساعت آینده'}</span><strong>${fa(maxRain)}٪</strong></div><div class="rain-track"><i style="width:${Math.min(maxRain,100)}%"></i></div><div class="rain-meta">${rainIndex>=0?'زمان احتمالی شروع: '+rainTime:'بارش قابل‌توجهی پیش‌بینی نشده'} · مجموع بارش پیش‌بینی‌شده: ${fa(rainAmount)} میلی‌متر</div><div class="rain-alert"><span>🔔 اعلان بارش</span><button type="button" id="rainPermission">فعال‌سازی اعلان</button></div>`;
+  maybeNotifyRain(name,d,i);
   $('stats').innerHTML=
    cd('☀️ شاخص UV',`<div class="big">${fa(uv)}</div><div class="lvl">${ul}</div><div class="uv"><s style="left:${Math.min(uv/11,1)*100}%"></s></div>`,0,'بیشینه امروز')+
    cd('🌇 غروب',`<div class="big">${tm(D.sunset[0])}</div>`,0,'طلوع: '+tm(D.sunrise[0]))+
@@ -120,7 +158,8 @@ function render(d,name){
   $('msg').hidden=true;$('app').hidden=false;onScroll();
 }
 function onScroll(){const p=Math.min(Math.max((scrollY-70)/110,0),1);$('mini').style.opacity=p;$('hero').style.opacity=1-p*.9}
-addEventListener('scroll',onScroll,{passive:true});
+let scrollQueued=false;addEventListener('scroll',()=>{if(scrollQueued)return;scrollQueued=true;requestAnimationFrame(()=>{onScroll();scrollQueued=false})},{passive:true});
+document.addEventListener('click',async e=>{if(e.target.id!=='rainPermission')return;try{if('Notification' in window){const p=await Notification.requestPermission();if(p==='granted')e.target.textContent='اعلان فعال شد';else e.target.textContent='اجازه داده نشد';}else{e.target.textContent='اعلان سیستم پشتیبانی نمی‌شود';}}catch(err){e.target.textContent='فعال‌سازی ممکن نشد';}});
 let tm,searchController,searchSeq=0;
 function showSearchMessage(message){const s=$('sug');s.replaceChildren();const li=document.createElement('li');li.textContent=message;li.style.cursor='default';s.append(li);s.hidden=false}
 $('q').addEventListener('input',e=>{
@@ -169,6 +208,8 @@ $('loc').onclick=()=>{
   },{enableHighAccuracy:true,timeout:18000,maximumAge:300000});
 };
 load(36.6959,45.1413,'پیرانشهر');
+let lastRefresh=Date.now();
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()-lastRefresh>30*60*1000){lastRefresh=Date.now();load(36.6959,45.1413,'پیرانشهر')}});
 </script>
 </body>
 </html>
