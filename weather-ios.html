@@ -97,7 +97,7 @@ const dn=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پ
 const $=id=>document.getElementById(id);
 const get=async (u,options={})=>{const r=await fetch(u,options);if(!r.ok)throw 0;return r.json()};
 let activePlace={lat:36.6959,lon:45.1413,name:'پیرانشهر'};
-let loadController=null,loadSequence=0;
+let loadController=null,loadSequence=0,lastNetworkRefresh=0;
 async function load(lat,lon,name,{force=false}={}){
   activePlace={lat,lon,name};
   const cacheKey=`qandil-weather-${lat.toFixed(3)}-${lon.toFixed(3)}`;
@@ -113,7 +113,7 @@ async function load(lat,lon,name,{force=false}={}){
   try{
     const data=await get(url,{signal:loadController.signal});
     if(seq!==loadSequence)return;
-    render(data,name);
+    render(data,name);lastNetworkRefresh=Date.now();
     try{localStorage.setItem(cacheKey,JSON.stringify({saved:Date.now(),data}))}catch(e){}
   }catch(e){
     if(e.name==='AbortError')return;
@@ -227,7 +227,7 @@ $('loc').onclick=()=>{
   },{enableHighAccuracy:true,timeout:18000,maximumAge:300000});
 };
 load(36.6959,45.1413,'پیرانشهر');
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')load(activePlace.lat,activePlace.lon,activePlace.name,{force:true})});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()-lastNetworkRefresh>30*60*1000)load(activePlace.lat,activePlace.lon,activePlace.name,{force:true})});
 </script>
 </body>
 </html>
