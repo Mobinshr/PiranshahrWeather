@@ -181,7 +181,7 @@ function render(d,name){
 }
 function onScroll(){const p=Math.min(Math.max((scrollY-70)/110,0),1);$('mini').style.opacity=p;$('hero').style.opacity=1-p*.9}
 let scrollQueued=false;addEventListener('scroll',()=>{if(scrollQueued)return;scrollQueued=true;requestAnimationFrame(()=>{onScroll();scrollQueued=false})},{passive:true});
-document.addEventListener('click',async e=>{if(e.target.id!=='rainPermission')return;try{if(window.AndroidBridge&&typeof AndroidBridge.requestNotificationPermission==='function'){AndroidBridge.requestNotificationPermission();e.target.textContent='درخواست مجوز اعلان ارسال شد';}else if('Notification' in window){const p=await Notification.requestPermission();e.target.textContent=p==='granted'?'اعلان فعال شد':'اجازه داده نشد';}else{e.target.textContent='اعلان سیستم پشتیبانی نمی‌شود';}}catch(err){e.target.textContent='فعال‌سازی ممکن نشد';}});
+document.addEventListener('click',async e=>{if(e.target.id!=='rainPermission')return;try{if(window.AndroidBridge&&typeof AndroidBridge.requestNotificationPermission==='function'){const result=AndroidBridge.requestNotificationPermission();e.target.textContent=result==='granted'?'اعلان‌ها در سیستم فعال هستند':result==='settings'?'لطفاً اعلان قندیل را در تنظیمات فعال کنید':result==='requested'?'درخواست مجوز نمایش داده می‌شود':'امکان درخواست مجوز نیست';}else if('Notification' in window){const p=await Notification.requestPermission();e.target.textContent=p==='granted'?'اعلان فعال شد':'اجازه داده نشد';}else{e.target.textContent='اعلان سیستم پشتیبانی نمی‌شود';}}catch(err){e.target.textContent='فعال‌سازی ممکن نشد';}});
 let tm,searchController,searchSeq=0;
 function showSearchMessage(message){const s=$('sug');s.replaceChildren();const li=document.createElement('li');li.textContent=message;li.style.cursor='default';s.append(li);s.hidden=false}
 $('q').addEventListener('input',e=>{
@@ -214,19 +214,28 @@ $('sug').addEventListener('click',e=>{
   load(Number(li.dataset.lat),Number(li.dataset.lon),li.dataset.name);
 });
 $('f').addEventListener('submit',e=>{e.preventDefault();const first=$('sug').querySelector('li[data-lat]');if(first)first.click()});
+async function qandilUseCoordinates(latitude,longitude){
+  let city='موقعیت من';
+  try{
+    const r=await get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=fa`);
+    city=r.city||r.locality||r.localityInfo?.administrative?.[2]?.name||r.principalSubdivision||city;
+  }catch(e){}
+  $('loc').disabled=false;load(latitude,longitude,city);
+}
+window.onQandilNativeLocation=(lat,lon,accuracy)=>qandilUseCoordinates(Number(lat),Number(lon));
+window.onQandilNativeLocationError=(reason)=>{
+  $('loc').disabled=false;$('msg').hidden=false;$('app').hidden=true;
+  $('msg').textContent=reason==='permission'?'مجوز مکان داده نشد؛ از تنظیمات برنامه دسترسی مکان را فعال کنید.':reason==='timeout'?'موقعیت پیدا نشد؛ GPS را روشن کنید و در فضای باز دوباره امتحان کنید.':'مکان‌یابی انجام نشد؛ GPS و دسترسی مکان را بررسی کنید.';
+};
 $('loc').onclick=()=>{
-  if(!navigator.geolocation){$('msg').hidden=false;$('msg').textContent='موقعیت‌یابی در این دستگاه پشتیبانی نمی‌شود';$('app').hidden=true;return}
   $('loc').disabled=true;$('msg').hidden=false;$('msg').textContent='در حال دریافت موقعیت مکانی…';$('app').hidden=true;
-  navigator.geolocation.getCurrentPosition(async p=>{
-    const {latitude,longitude}=p.coords;let city='موقعیت من';
-    try{
-      const r=await get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=fa`);
-      city=r.city||r.locality||r.localityInfo?.administrative?.[2]?.name||r.principalSubdivision||city;
-    }catch(e){}
-    $('loc').disabled=false;load(latitude,longitude,city);
-  },err=>{
-    $('loc').disabled=false;$('msg').hidden=false;$('app').hidden=true;
-    $('msg').textContent=err.code===1?'اجازهٔ دسترسی به موقعیت مکانی داده نشد. از تنظیمات برنامه، مجوز مکان را فعال کنید.':err.code===3?'دریافت موقعیت بیش از حد طول کشید؛ دوباره تلاش کنید.':'موقعیت مکانی در دسترس نیست. GPS و اینترنت را بررسی کنید.';
+  if(window.AndroidBridge&&typeof AndroidBridge.requestNativeLocation==='function'){
+    try{AndroidBridge.requestNativeLocation();}catch(e){window.onQandilNativeLocationError('unavailable');}
+    return;
+  }
+  if(!navigator.geolocation){window.onQandilNativeLocationError('unavailable');return;}
+  navigator.geolocation.getCurrentPosition(p=>qandilUseCoordinates(p.coords.latitude,p.coords.longitude),err=>{
+    window.onQandilNativeLocationError(err.code===1?'permission':err.code===3?'timeout':'unavailable');
   },{enableHighAccuracy:true,timeout:18000,maximumAge:300000});
 };
 load(36.6959,45.1413,'پیرانشهر');
