@@ -362,7 +362,7 @@ jobs:
           activity = Path("app/src/main/java/com/example/weather/MainActivity.kt")
           source = activity.read_text(encoding="utf-8")
           if "private var qandilBridge: AndroidBridge? = null" not in source:
-              source = source.replace("    private var webViewInstance: WebView? = null", "    private var webViewInstance: WebView? = null\n    private var qandilBridge: AndroidBridge? = null")
+              source = source.replace("class MainActivity : ComponentActivity() {", "class MainActivity : ComponentActivity() {\n    private var qandilBridge: AndroidBridge? = null", 1)
           source = source.replace(
               'addJavascriptInterface(AndroidBridge(context), "AndroidBridge")',
               'qandilBridge = AndroidBridge(context, this)\n                    addJavascriptInterface(qandilBridge!!, "AndroidBridge")'
