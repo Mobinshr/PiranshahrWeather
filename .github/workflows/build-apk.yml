@@ -191,6 +191,190 @@ jobs:
           print("Qandil splash branding, native rain alerts, and WebView GPS permissions configured.")
           PY
 
+      - name: Fix Huawei-compatible native location and notification bridge
+        working-directory: piranshahr-weather-android
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          bridge = Path("app/src/main/java/com/example/weather/AndroidBridge.kt")
+          bridge.write_text(r'''package com.example.weather
+
+          import android.Manifest
+          import android.app.Activity
+          import android.app.NotificationManager
+          import android.content.Context
+          import android.content.ContextWrapper
+          import android.content.Intent
+          import android.content.pm.PackageManager
+          import android.location.Location
+          import android.location.LocationListener
+          import android.location.LocationManager
+          import android.os.Build
+          import android.os.Bundle
+          import android.os.Handler
+          import android.os.Looper
+          import android.provider.Settings
+          import android.webkit.JavascriptInterface
+          import android.webkit.WebView
+          import androidx.core.app.ActivityCompat
+          import androidx.core.app.NotificationManagerCompat
+
+          class AndroidBridge(private val context: Context, private val webView: WebView) {
+              private var locationManager: LocationManager? = null
+              private var locationListener: LocationListener? = null
+              private val handler = Handler(Looper.getMainLooper())
+
+              private fun hostActivity(): Activity? {
+                  var current: Context = context
+                  while (current is ContextWrapper) {
+                      if (current is Activity) return current
+                      current = current.baseContext
+                  }
+                  return current as? Activity
+              }
+
+              @JavascriptInterface
+              fun isNativeAndroid(): Boolean = true
+
+              @JavascriptInterface
+              fun requestNotificationPermission(): String {
+                  val activity = hostActivity() ?: return "unavailable"
+                  if (Build.VERSION.SDK_INT >= 33) {
+                      if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) return "granted"
+                      activity.runOnUiThread {
+                          ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1001)
+                      }
+                      return "requested"
+                  }
+                  val enabled = NotificationManagerCompat.from(activity).areNotificationsEnabled()
+                  if (enabled) return "granted"
+                  activity.runOnUiThread {
+                      val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, activity.packageName)
+                      activity.startActivity(intent)
+                  }
+                  return "settings"
+              }
+
+              @JavascriptInterface
+              fun showNativeNotification(title: String, body: String, tag: String): Boolean {
+                  return NotificationHelper.show(context, title, body, tag)
+              }
+
+              @JavascriptInterface
+              fun requestNativeLocation() {
+                  val activity = hostActivity() ?: run { deliverLocationError("activity"); return }
+                  activity.runOnUiThread {
+                      val fine = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                      val coarse = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                      if (!fine && !coarse) {
+                          ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 1002)
+                      } else {
+                          findLocation()
+                      }
+                  }
+              }
+
+              fun onLocationPermissionResult(granted: Boolean) {
+                  if (granted) findLocation() else deliverLocationError("permission")
+              }
+
+              private fun findLocation() {
+                  try {
+                      val activity = hostActivity() ?: run { deliverLocationError("activity"); return }
+                      val fine = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                      val coarse = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                      if (!fine && !coarse) { deliverLocationError("permission"); return }
+
+                      val manager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                      locationManager = manager
+                      val providers = manager.getProviders(true).filter {
+                          it == LocationManager.GPS_PROVIDER || it == LocationManager.NETWORK_PROVIDER || it == LocationManager.PASSIVE_PROVIDER
+                      }
+                      val recent = providers.mapNotNull { provider ->
+                          try { manager.getLastKnownLocation(provider) } catch (_: SecurityException) { null }
+                      }.maxByOrNull { it.time }
+                      if (recent != null && System.currentTimeMillis() - recent.time < 120000L) {
+                          deliverLocation(recent)
+                          return
+                      }
+
+                      stopLocationUpdates()
+                      var completed = false
+                      val listener = object : LocationListener {
+                          override fun onLocationChanged(location: Location) {
+                              if (!completed) {
+                                  completed = true
+                                  stopLocationUpdates()
+                                  deliverLocation(location)
+                              }
+                          }
+                          @Deprecated("Deprecated by Android")
+                          override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+                          override fun onProviderEnabled(provider: String) {}
+                          override fun onProviderDisabled(provider: String) {}
+                      }
+                      locationListener = listener
+                      providers.forEach { provider ->
+                          try { manager.requestLocationUpdates(provider, 1000L, 0f, listener, Looper.getMainLooper()) } catch (_: Exception) {}
+                      }
+                      handler.postDelayed({
+                          if (!completed) {
+                              completed = true
+                              stopLocationUpdates()
+                              val fallback = providers.mapNotNull { p -> try { manager.getLastKnownLocation(p) } catch (_: Exception) { null } }.maxByOrNull { it.time }
+                              if (fallback != null) deliverLocation(fallback) else deliverLocationError("timeout")
+                          }
+                      }, 20000L)
+                  } catch (_: Exception) {
+                      deliverLocationError("unavailable")
+                  }
+              }
+
+              private fun stopLocationUpdates() {
+                  try { locationListener?.let { locationManager?.removeUpdates(it) } } catch (_: Exception) {}
+                  locationListener = null
+              }
+
+              private fun deliverLocation(location: Location) {
+                  val js = "window.onQandilNativeLocation && window.onQandilNativeLocation(${location.latitude},${location.longitude},${location.accuracy})"
+                  webView.post { webView.evaluateJavascript(js, null) }
+              }
+
+              private fun deliverLocationError(reason: String) {
+                  val js = "window.onQandilNativeLocationError && window.onQandilNativeLocationError('${reason}')"
+                  webView.post { webView.evaluateJavascript(js, null) }
+              }
+
+              @JavascriptInterface
+              fun vibrate(ms: Long) {
+                  try {
+                      @Suppress("DEPRECATION")
+                      val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as? android.os.Vibrator
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) vibrator?.vibrate(android.os.VibrationEffect.createOneShot(ms, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
+                      else vibrator?.vibrate(ms)
+                  } catch (_: Exception) {}
+              }
+          }
+          ''', encoding="utf-8")
+
+          activity = Path("app/src/main/java/com/example/weather/MainActivity.kt")
+          source = activity.read_text(encoding="utf-8")
+          if "private var qandilBridge: AndroidBridge? = null" not in source:
+              source = source.replace("    private var webViewInstance: WebView? = null", "    private var webViewInstance: WebView? = null\n    private var qandilBridge: AndroidBridge? = null")
+          source = source.replace(
+              'addJavascriptInterface(AndroidBridge(context), "AndroidBridge")',
+              'qandilBridge = AndroidBridge(context, this)\n                    addJavascriptInterface(qandilBridge!!, "AndroidBridge")'
+          )
+          if "qandilBridge?.onLocationPermissionResult(granted)" not in source:
+              source = source.replace(
+                  "                  QandilGeoPermission.callback?.invoke(QandilGeoPermission.origin ?: \"\", granted, false)",
+                  "                  QandilGeoPermission.callback?.invoke(QandilGeoPermission.origin ?: \"\", granted, false)\n                  qandilBridge?.onLocationPermissionResult(granted)"
+              )
+          activity.write_text(source, encoding="utf-8")
+          print("Native location now uses Android LocationManager (no GMS dependency); notification permission handles Android 10+ correctly.")
+          PY
+
       - name: Validate replacement weather app
         working-directory: piranshahr-weather-android
         run: python3 ../tools/validate_project.py
