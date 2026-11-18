@@ -134,6 +134,7 @@ jobs:
               if (requestCode == 1002) {
                   val granted = grantResults.any { it == PackageManager.PERMISSION_GRANTED }
                   QandilGeoPermission.callback?.invoke(QandilGeoPermission.origin ?: "", granted, false)
+                  qandilBridge?.onLocationPermissionResult(granted)
                   QandilGeoPermission.callback = null
                   QandilGeoPermission.origin = null
               }
