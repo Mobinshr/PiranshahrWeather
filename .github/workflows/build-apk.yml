@@ -221,7 +221,7 @@ jobs:
           import androidx.core.app.ActivityCompat
           import androidx.core.app.NotificationManagerCompat
 
-          class AndroidBridge(private val context: Context, private val webView: WebView) {
+          class AndroidBridge(private val context: Context, private val webView: WebView) {\n              companion object { var activeBridge: AndroidBridge? = null }\n              init { activeBridge = this }
               private var locationManager: LocationManager? = null
               private var locationListener: LocationListener? = null
               private val handler = Handler(Looper.getMainLooper())
@@ -361,13 +361,11 @@ jobs:
 
           activity = Path("app/src/main/java/com/example/weather/MainActivity.kt")
           source = activity.read_text(encoding="utf-8")
-          if "private var qandilBridge: AndroidBridge? = null" not in source:
-              source = source.replace("class MainActivity : ComponentActivity() {", "class MainActivity : ComponentActivity() {\n    private var qandilBridge: AndroidBridge? = null", 1)
           source = source.replace(
               'addJavascriptInterface(AndroidBridge(context), "AndroidBridge")',
-              'qandilBridge = AndroidBridge(context, this)\n                    addJavascriptInterface(qandilBridge!!, "AndroidBridge")'
+              'addJavascriptInterface(AndroidBridge(context, this), "AndroidBridge")'
           )
-          if "qandilBridge?.onLocationPermissionResult(granted)" not in source:
+          if "AndroidBridge.activeBridge?.onLocationPermissionResult(granted)" not in source:
               source = source.replace(
                   "                  QandilGeoPermission.callback?.invoke(QandilGeoPermission.origin ?: \"\", granted, false)",
                   "                  QandilGeoPermission.callback?.invoke(QandilGeoPermission.origin ?: \"\", granted, false)\n                  qandilBridge?.onLocationPermissionResult(granted)"
