@@ -134,7 +134,7 @@ jobs:
               if (requestCode == 1002) {
                   val granted = grantResults.any { it == PackageManager.PERMISSION_GRANTED }
                   QandilGeoPermission.callback?.invoke(QandilGeoPermission.origin ?: "", granted, false)
-                  qandilBridge?.onLocationPermissionResult(granted)
+                  AndroidBridge.activeBridge?.onLocationPermissionResult(granted)
                   QandilGeoPermission.callback = null
                   QandilGeoPermission.origin = null
               }
@@ -221,7 +221,9 @@ jobs:
           import androidx.core.app.ActivityCompat
           import androidx.core.app.NotificationManagerCompat
 
-          class AndroidBridge(private val context: Context, private val webView: WebView) {\n              companion object { var activeBridge: AndroidBridge? = null }\n              init { activeBridge = this }
+          class AndroidBridge(private val context: Context, private val webView: WebView) {
+              companion object { var activeBridge: AndroidBridge? = null }
+              init { activeBridge = this }
               private var locationManager: LocationManager? = null
               private var locationListener: LocationListener? = null
               private val handler = Handler(Looper.getMainLooper())
@@ -368,7 +370,7 @@ jobs:
           if "AndroidBridge.activeBridge?.onLocationPermissionResult(granted)" not in source:
               source = source.replace(
                   "                  QandilGeoPermission.callback?.invoke(QandilGeoPermission.origin ?: \"\", granted, false)",
-                  "                  QandilGeoPermission.callback?.invoke(QandilGeoPermission.origin ?: \"\", granted, false)\n                  qandilBridge?.onLocationPermissionResult(granted)"
+                  "                  QandilGeoPermission.callback?.invoke(QandilGeoPermission.origin ?: \"\", granted, false)\n                  AndroidBridge.activeBridge?.onLocationPermissionResult(granted)"
               )
           activity.write_text(source, encoding="utf-8")
           print("Native location now uses Android LocationManager (no GMS dependency); notification permission handles Android 10+ correctly.")
