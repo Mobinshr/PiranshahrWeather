@@ -121,6 +121,22 @@ footer b{font-weight:600;opacity:1}
 
 @media(prefers-reduced-motion:reduce){body{transition:none}}
 
+/* بهینه‌سازی رندر برای WebView گوشی‌های میان‌رده */
+@media (max-width:600px){
+  .search,#sug,.card,.banner-rain,.pull{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  .search{background:rgba(255,255,255,.25)}
+  #sug{background:rgba(20,30,50,.94)}
+  .card{background:rgba(255,255,255,.23)}
+  .banner-rain{background:rgba(255,160,75,.28)}
+  .pull{background:rgba(20,30,50,.96)}
+  .status-dot,.status-dot.offline{animation:none;box-shadow:none}
+  .banner-rain{animation:slideDown .25s ease-out}
+  .banner-rain .banner-icon{animation:none}
+}
+
 /* رفع باگ عدم مخفی شدن المان‌ها */
 [hidden] { display: none !important; }
 </style>
