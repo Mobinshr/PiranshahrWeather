@@ -315,7 +315,15 @@ const AQI_API = (lat, lon) =>
 const GEO_API = v =>
   `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=100&language=${encodeURIComponent(appLang)}`;
 
-const get = async u => {\n  const controller = new AbortController();\n  const timer = setTimeout(() => controller.abort(), 18000);\n  try {\n    const r = await fetch(u, { signal:controller.signal });\n    if (!r.ok) throw new Error('HTTP ' + r.status);\n    return await r.json();\n  } finally { clearTimeout(timer); }\n};
+const get = async u => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 18000);
+  try {
+    const r = await fetch(u, { signal:controller.signal });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } finally { clearTimeout(timer); }
+};
 
 /* ============ Constants ============ */
 const REFRESH_MS = 15 * 60 * 1000;
