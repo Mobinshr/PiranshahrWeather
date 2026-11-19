@@ -1078,3 +1078,23 @@ document.addEventListener('visibilitychange', () => {
 setupManifest();
 updateBell();
 updateStatusDot(navigator.onLine);
+
+// دریافت خودکار آب‌وهوا هنگام باز شدن برنامه
+try {
+  const savedCity = JSON.parse(localStorage.getItem(LAST_CITY_KEY) || 'null');
+  if (savedCity &&
+      Number.isFinite(Number(savedCity.lat)) &&
+      Number.isFinite(Number(savedCity.lon)) &&
+      Math.abs(Number(savedCity.lat)) <= 90 &&
+      Math.abs(Number(savedCity.lon)) <= 180) {
+    current = {
+      lat: Number(savedCity.lat),
+      lon: Number(savedCity.lon),
+      name: String(savedCity.name || 'پیرانشهر'),
+      region: String(savedCity.region || ''),
+      key: cacheKeyFor(Number(savedCity.lat), Number(savedCity.lon))
+    };
+  }
+} catch (e) {}
+
+load(current.lat, current.lon, current.name, current.region);
