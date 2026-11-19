@@ -234,7 +234,7 @@ const AQI_API = (lat, lon) =>
 const GEO_API = v =>
   `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=100&language=fa&countryCode=IR`;
 
-const get = async u => { const r = await fetch(u); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); };
+const get = async u => {\n  const controller = new AbortController();\n  const timer = setTimeout(() => controller.abort(), 18000);\n  try {\n    const r = await fetch(u, { signal:controller.signal });\n    if (!r.ok) throw new Error('HTTP ' + r.status);\n    return await r.json();\n  } finally { clearTimeout(timer); }\n};
 
 /* ============ Constants ============ */
 const REFRESH_MS = 15 * 60 * 1000;
@@ -248,7 +248,7 @@ const RAIN_WINDOW_HOURS = 6;
 const NOTIF_ICON = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#2a6fd6"/><text x="32" y="46" font-size="36" text-anchor="middle">🌧️</text></svg>');
 
 /* ============ State ============ */
-let current = { lat:35.6892, lon:51.389, name:'تهران', region:'تهران، ایران', key:'35.6892_51.389' };
+let current = { lat:36.6959, lon:45.1413, name:'پیرانشهر', region:'آذربایجان غربی، ایران', key:'36.6959_45.1413' };
 let lastWeather = null;
 let lastAqi = null;
 let lastSavedAt = null;
