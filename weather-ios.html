@@ -232,7 +232,7 @@ const API = (lat, lon) =>
 const AQI_API = (lat, lon) =>
   `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=european_aqi&timezone=auto`;
 const GEO_API = v =>
-  `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=10&language=fa`;
+  `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=100&language=fa&countryCode=IR`;
 
 const get = async u => { const r = await fetch(u); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); };
 
