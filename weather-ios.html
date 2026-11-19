@@ -185,9 +185,90 @@ footer b{font-weight:600;opacity:1}
 'use strict';
 
 /* ============ Helpers ============ */
-const fa = n => Math.round(n).toLocaleString('fa-IR');
-const dg = s => String(s).replace(/\d/g, x => '۰۱۲۳۴۵۶۷۸۹'[x]);
 const $ = id => document.getElementById(id);
+const SYSTEM_LANGS = ['fa','en','ar'];
+const deviceLocale = (navigator.languages && navigator.languages[0]) || navigator.language || 'fa';
+const localeBase = deviceLocale.toLowerCase().split(/[-_]/)[0];
+const appLang = SYSTEM_LANGS.includes(localeBase) ? localeBase : (localeBase || 'en');
+const localeTag = appLang === 'fa' ? 'fa-IR' : appLang === 'ar' ? 'ar' : appLang === 'en' ? 'en' : deviceLocale;
+document.documentElement.lang = appLang;
+document.documentElement.dir = (appLang === 'fa' || appLang === 'ar') ? 'rtl' : 'ltr';
+const numberFormat = new Intl.NumberFormat(localeTag,{maximumFractionDigits:0});
+const fa = n => numberFormat.format(Math.round(n));
+const dg = s => String(s).replace(/\d/g, x => numberFormat.format(+x));
+const BUILTIN = {
+en:{
+'آب‌وهوای قندیل':'Qandil Weather','جستجوی شهر':'Search for a city','موقعیت من':'My location','اعلان بارش':'Rain alerts','فعال‌سازی اعلان بارش':'Enable rain alerts','نصب اپ':'Install app','نصب':'Install','به‌روزرسانی':'Refresh','آنلاین':'Online','آفلاین':'Offline','هشدار بارش':'Rain alert','در حال دریافت اطلاعات…':'Loading weather…','دمای ۲۴ ساعت آینده':'Temperature – next 24 hours','احتمال بارش ۲۴ ساعت آینده':'Rain chance – next 24 hours','پیش‌بینی ساعتی':'Hourly forecast','پیش‌بینی ۷ روزه':'7-day forecast','آخرین به‌روزرسانی:':'Last updated:','به‌روزرسانی بعدی تا':'Next update in',(appLang==='fa'?'اکنون':appLang==='ar'?'الآن':'Now'):'Now',(appLang==='fa'?'امروز':appLang==='ar'?'اليوم':'Today'):'Today','بیشینه':'High','کمینه':'Low','شاخص UV':'UV index','کم':'Low','متوسط':'Moderate','زیاد':'High','خیلی زیاد':'Very high','شدید':'Extreme','بیشینه امروز':'Today’s maximum','غروب':'Sunset','طلوع:':'Sunrise:','باد':'Wind','کیلومتر بر ساعت':'km/h','نسیم ملایم':'Light breeze','باد متوسط':'Moderate wind','باد قوی':'Strong wind','حس واقعی':'Feels like','گرم‌تر از دمای واقعی':'Warmer than actual temperature','سردتر از دمای واقعی':'Colder than actual temperature','نزدیک به دمای واقعی':'Close to actual temperature','رطوبت':'Humidity','هوای خشک':'Dry air','رطوبت مطلوب':'Comfortable humidity','هوای مرطوب':'Humid air','احتمال بارش':'Precipitation chance','کیفیت هوا':'Air quality','نامشخص':'Unknown','خوب':'Good','قابل قبول':'Fair','ناسالم':'Poor','بسیار ناسالم':'Very poor','شاخص اروپایی (EAQI)':'European Air Quality Index (EAQI)','فشار هوا':'Air pressure','هکتوپاسکال':'hPa','کم‌فشار':'Low pressure','پرفشار':'High pressure','نرمال':'Normal','در حال جستجو…':'Searching…','نتیجه‌ای یافت نشد':'No results found','خطا در جستجو — اتصال را بررسی کنید':'Search failed — check your connection','در حال دریافت موقعیت…':'Getting your location…','موقعیت‌یابی در این دستگاه پشتیبانی نمی‌شود':'Location is not supported on this device','دسترسی به موقعیت رد شد یا GPS در دسترس نیست':'Location access denied or GPS unavailable','اعلان‌ها خاموش شد':'Notifications disabled','اعلان‌ها فعال شد ✅':'Notifications enabled ✅','از این پس هشدارهای بارش به‌صورت اعلان نمایش داده می‌شوند.':'Rain alerts will now appear as notifications.','برای به‌روزرسانی بکشید':'Pull to refresh','برای به‌روزرسانی رها کنید':'Release to refresh','در حال به‌روزرسانی…':'Updating…','پیش‌بینی آب‌وهوا':'Weather forecast','آسمان صاف':'Clear sky','کم‌ابر':'Mainly clear','نیمه‌ابری':'Partly cloudy','ابری':'Overcast','مه‌آلود':'Fog','مه یخی':'Rime fog','نم‌نم باران':'Drizzle','نم‌نم یخ‌زده':'Freezing drizzle','باران ملایم':'Light rain','باران':'Rain','باران شدید':'Heavy rain','باران یخ‌زده':'Freezing rain','برف ملایم':'Light snow','برف':'Snow','برف سنگین':'Heavy snow','دانه‌برف':'Snow grains','رگبار':'Rain showers','رگبار شدید':'Heavy showers','رگبار برف':'Snow showers','رعدوبرق':'Thunderstorm','رعدوبرق و تگرگ':'Thunderstorm with hail','برای خاموش کردن کلیک کنید':'Tap to turn off','فعال‌سازی اعلان بارش':'Enable rain alerts','موقعیت من':'My location'
+},
+ar:{
+'آب‌وهوای قندیل':'طقس قنديل','جستجوی شهر':'ابحث عن مدينة','موقعیت من':'موقعي','اعلان بارش':'تنبيهات المطر','فعال‌سازی اعلان بارش':'تفعيل تنبيهات المطر','نصب اپ':'تثبيت التطبيق','نصب':'تثبيت','به‌روزرسانی':'تحديث','آنلاین':'متصل','آفلاین':'غير متصل','هشدار بارش':'تنبيه المطر','در حال دریافت اطلاعات…':'جارٍ تحميل بيانات الطقس…','دمای ۲۴ ساعت آینده':'درجة الحرارة خلال ٢٤ ساعة','احتمال بارش ۲۴ ساعت آینده':'احتمال المطر خلال ٢٤ ساعة','پیش‌بینی ساعتی':'التوقعات بالساعة','پیش‌بینی ۷ روزه':'توقعات ٧ أيام','آخرین به‌روزرسانی:':'آخر تحديث:','به‌روزرسانی بعدی تا':'التحديث التالي خلال','اکنون':'الآن','امروز':'اليوم','بیشینه':'العظمى','کمینه':'الصغرى','شاخص UV':'مؤشر الأشعة فوق البنفسجية','کم':'منخفض','متوسط':'متوسط','زیاد':'مرتفع','خیلی زیاد':'مرتفع جداً','شدید':'شديد','بیشینه امروز':'الحد الأقصى اليوم','غروب':'غروب الشمس','طلوع:':'الشروق:','باد':'الرياح','کیلومتر بر ساعت':'كم/ساعة','نسیم ملایم':'نسيم خفيف','باد متوسط':'رياح معتدلة','باد قوی':'رياح قوية','حس واقعی':'المحسوسة','گرم‌تر از دمای واقعی':'أدفأ من الحرارة الفعلية','سردتر از دمای واقعی':'أبرد من الحرارة الفعلية','نزدیک به دمای واقعی':'قريبة من الحرارة الفعلية','رطوبت':'الرطوبة','هوای خشک':'هواء جاف','رطوبت مطلوب':'رطوبة مريحة','هوای مرطوب':'هواء رطب','احتمال بارش':'احتمال هطول المطر','کیفیت هوا':'جودة الهواء','نامشخص':'غير معروف','خوب':'جيد','قابل قبول':'مقبول','ناسالم':'غير صحي','بسیار ناسالم':'غير صحي جداً','شاخص اروپایی (EAQI)':'مؤشر جودة الهواء الأوروبي','فشار هوا':'ضغط الهواء','هکتوپاسکال':'هكتوباسكال','کم‌فشار':'ضغط منخفض','پرفشار':'ضغط مرتفع','نرمال':'طبيعي','در حال جستجو…':'جارٍ البحث…','نتیجه‌ای یافت نشد':'لم يتم العثور على نتائج','خطا در جستجو — اتصال را بررسی کنید':'تعذر البحث — تحقق من الاتصال','در حال دریافت موقعیت…':'جارٍ تحديد موقعك…','موقعیت‌یابی در این دستگاه پشتیبانی نمی‌شود':'تحديد الموقع غير مدعوم على هذا الجهاز','دسترسی به موقعیت رد شد یا GPS در دسترس نیست':'تم رفض إذن الموقع أو GPS غير متاح','اعلان‌ها خاموش شد':'تم إيقاف التنبيهات','اعلان‌ها فعال شد ✅':'تم تفعيل التنبيهات ✅','از این پس هشدارهای بارش به‌صورت اعلان نمایش داده می‌شوند.':'ستظهر تنبيهات المطر الآن كإشعارات.','برای به‌روزرسانی بکشید':'اسحب للتحديث','برای به‌روزرسانی رها کنید':'اترك للتحديث','در حال به‌روزرسانی…':'جارٍ التحديث…','پیش‌بینی آب‌وهوا':'توقعات الطقس','آسمان صاف':'سماء صافية','کم‌ابر':'غائم جزئياً','نیمه‌ابری':'غائم جزئياً','ابری':'غائم','مه‌آلود':'ضباب','مه یخی':'ضباب متجمد','نم‌نم باران':'رذاذ','نم‌نم یخ‌زده':'رذاذ متجمد','باران ملایم':'مطر خفيف','باران':'مطر','باران شدید':'مطر غزير','باران یخ‌زده':'مطر متجمد','برف ملایم':'ثلوج خفيفة','برف':'ثلج','برف سنگین':'ثلوج كثيفة','دانه‌برف':'حبيبات ثلج','رگبار':'زخات مطر','رگبار شدید':'زخات غزيرة','رگبار برف':'زخات ثلجية','رعدوبرق':'عاصفة رعدية','رعدوبرق و تگرگ':'عاصفة رعدية وبَرَد'
+}};
+const builtinMap = BUILTIN[appLang] || {};
+const translationCache = new Map();
+const translatedNodes = new WeakSet();
+const pendingTranslations = new Set();
+let translationTimer = null;
+function translateText(text){
+  const raw = text.trim();
+  if (!raw || appLang === 'fa') return Promise.resolve(text);
+  if (builtinMap[raw]) return Promise.resolve(text.replace(raw,builtinMap[raw]));
+  if (appLang === 'en' || appLang === 'ar') return Promise.resolve(text);
+  if (translationCache.has(raw)) return Promise.resolve(text.replace(raw,translationCache.get(raw)));
+  return fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=fa&tl='+encodeURIComponent(appLang)+'&dt=t&q='+encodeURIComponent(raw))
+    .then(r=>r.ok?r.json():Promise.reject()).then(data=>{
+      const result=(data[0]||[]).map(x=>x[0]||'').join('');
+      if(result){translationCache.set(raw,result);try{localStorage.setItem('qandil_tr_'+appLang+'_'+raw,result)}catch(e){};return text.replace(raw,result);}
+      return text;
+    }).catch(()=>text);
+}
+function queueTranslation(node){
+  if(translatedNodes.has(node)) return;
+  const raw=node.nodeValue;
+  if(!raw || !raw.trim()) return;
+  translatedNodes.add(node);
+  pendingTranslations.add(node);
+  clearTimeout(translationTimer);
+  translationTimer=setTimeout(async()=>{
+    const nodes=[...pendingTranslations];pendingTranslations.clear();
+    for(let i=0;i<nodes.length;i+=5){
+      await Promise.all(nodes.slice(i,i+5).map(async n=>{
+        if(!n.isConnected) return;
+        const original=n.nodeValue;
+        const translated=await translateText(original);
+        if(n.isConnected && translated!==original) n.nodeValue=translated;
+      }));
+    }
+  },80);
+}
+function scanTranslations(root=document.body){
+  if(appLang==='fa') return;
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{
+    const p=n.parentElement;
+    return p && !p.closest('script,style,textarea,canvas,svg') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+  }});
+  while(walker.nextNode()) queueTranslation(walker.currentNode);
+  root.querySelectorAll?.('[placeholder],[aria-label],[title]').forEach(el=>{
+    for(const attr of ['placeholder','aria-label','title']){
+      const val=el.getAttribute(attr);
+      if(val && !el.dataset['tr_'+attr]){el.dataset['tr_'+attr]='1';translateText(val).then(v=>{if(v!==val)el.setAttribute(attr,v);});}
+    }
+  });
+}
+function applySystemLanguage(){
+  document.documentElement.lang=appLang;
+  document.documentElement.dir=(appLang==='fa'||appLang==='ar')?'rtl':'ltr';
+  document.title=appLang==='fa'?'آب‌وهوای قندیل':appLang==='ar'?'طقس قنديل':'Qandil Weather';
+  if(appLang!=='fa'){
+    scanTranslations();
+    new MutationObserver(records=>records.forEach(r=>{
+      r.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE)queueTranslation(n);else if(n.nodeType===Node.ELEMENT_NODE)scanTranslations(n);});
+      if(r.type==='characterData') queueTranslation(r.target);
+    })).observe(document.body,{subtree:true,childList:true,characterData:true});
+  }
+}
+
+
+applySystemLanguage();
 
 /* ============ Weather code maps ============ */
 const W = {
@@ -220,7 +301,7 @@ function tc(t){
   const k = Math.max(0, Math.min(1, (t-a)/(b-a)));
   return `rgb(${A.map((v,j)=>Math.round(v+(B[j]-v)*k)).join()})`;
 }
-const dn = ['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+const dayName = date => new Intl.DateTimeFormat(localeTag,{weekday:'long'}).format(date);
 
 /* ============ API ============ */
 const API = (lat, lon) =>
@@ -232,7 +313,7 @@ const API = (lat, lon) =>
 const AQI_API = (lat, lon) =>
   `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=european_aqi&timezone=auto`;
 const GEO_API = v =>
-  `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=100&language=fa&countryCode=IR`;
+  `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=100&language=${encodeURIComponent(appLang)}`;
 
 const get = async u => {\n  const controller = new AbortController();\n  const timer = setTimeout(() => controller.abort(), 18000);\n  try {\n    const r = await fetch(u, { signal:controller.signal });\n    if (!r.ok) throw new Error('HTTP ' + r.status);\n    return await r.json();\n  } finally { clearTimeout(timer); }\n};
 
@@ -628,7 +709,7 @@ function render(d, aqi, name, savedAt, offline){
     const lo = D.temperature_2m_min[j], hi = D.temperature_2m_max[j];
     const l = (lo - mn)/sp*100, wd = Math.max((hi - lo)/sp*100, 5);
     const dot = j ? '' : `<s style="left:${Math.min(Math.max((c.temperature_2m-mn)/sp*100,0),100)}%"></s>`;
-    return `<div class="day"><b>${j ? dn[new Date(t+'T12:00').getDay()] : 'امروز'}</b><span class="i">${w(D.weather_code[j])[1]}</span><span class="lo">${fa(lo)}°</span><div class="bar"><u style="left:${l}%;width:${wd}%;background:linear-gradient(90deg,${tc(lo)},${tc(hi)})"></u>${dot}</div><span class="hi">${fa(hi)}°</span></div>`;
+    return `<div class="day"><b>${j ? dayName(new Date(t+'T12:00')) : 'امروز'}</b><span class="i">${w(D.weather_code[j])[1]}</span><span class="lo">${fa(lo)}°</span><div class="bar"><u style="left:${l}%;width:${wd}%;background:linear-gradient(90deg,${tc(lo)},${tc(hi)})"></u>${dot}</div><span class="hi">${fa(hi)}°</span></div>`;
   }).join('');
 
   const tm = s => dg(+s.slice(11,13)) + ':' + dg(s.slice(14,16));
@@ -654,7 +735,7 @@ function render(d, aqi, name, savedAt, offline){
     (pr != null ? cd('📊 فشار هوا', `<div class="big">${fa(pr)}</div><div class="lvl">هکتوپاسکال</div>`, pr < 1000 ? 'کم‌فشار' : pr > 1020 ? 'پرفشار' : 'نرمال') : '');
 
   const upd = new Date(savedAt || Date.now());
-  $('lastUpdate').textContent = upd.toLocaleTimeString('fa-IR', { hour:'2-digit', minute:'2-digit' }) + (offline ? ' (آفلاین)' : '');
+  $('lastUpdate').textContent = upd.toLocaleTimeString(localeTag, { hour:'2-digit', minute:'2-digit' }) + (offline ? ' (آفلاین)' : '');
 
   $('msg').hidden = true;
   $('app').hidden = false;
@@ -797,7 +878,7 @@ async function useQandilCoordinates(latitude, longitude){
   let placeName = 'موقعیت من';
   let region = 'موقعیت فعلی شما';
   try {
-    const reverse = await get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=fa`);
+    const reverse = await get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=${encodeURIComponent(appLang)}`);
     placeName = reverse.city || reverse.locality || reverse.localityInfo?.administrative?.[2]?.name || placeName;
     region = [reverse.principalSubdivision, reverse.countryName].filter(Boolean).join('، ') || region;
   } catch(e) {}
@@ -935,10 +1016,10 @@ document.addEventListener('touchcancel', () => { pulling = false; pullDist = 0; 
 function setupManifest(){
   try {
     const manifest = {
-      name:'آب‌وهوای قندیل', short_name:'قندیل',
-      description:'پیش‌بینی آب‌وهوا',
+      name:document.title, short_name:'Qandil',
+      description:document.title,
       start_url: location.href, scope:'./', display:'standalone', orientation:'portrait',
-      background_color:'#2a6fd6', theme_color:'#2a6fd6', dir:'rtl', lang:'fa',
+      background_color:'#2a6fd6', theme_color:'#2a6fd6', dir:document.documentElement.dir, lang:appLang,
       icons:[
         { src:'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="32" fill="#2a6fd6"/><text x="96" y="132" font-size="104" text-anchor="middle">🌤️</text></svg>'), sizes:'192x192', type:'image/svg+xml', purpose:'any maskable' },
         { src:'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="#2a6fd6"/><text x="256" y="340" font-size="260" text-anchor="middle">🌤️</text></svg>'), sizes:'512x512', type:'image/svg+xml', purpose:'any maskable' }
