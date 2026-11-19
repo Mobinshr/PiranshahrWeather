@@ -25,7 +25,7 @@ checks = {
     "WebView GPS permission handling is present": "setGeolocationEnabled(true)" in activity and "onGeolocationPermissionsShowPrompt" in activity and "requestCode == 1002" in activity,
     "weather uses selected coordinates": "api.open-meteo.com/v1/forecast?latitude=" in html,
     "hourly and daily rainfall data are requested": "precipitation_probability" in html and "precipitation_sum" in html,
-    "rain alert uses native Android bridge": "showNativeNotification" in html and "requestNotificationPermission" in html,
+    "notification controls from supplied interface are present": 'id="bell"' in html and "Notification.requestPermission" in html,
     "Huawei native GPS fallback is present": "requestNativeLocation" in html and "onQandilNativeLocation" in html,
     "Android internet permission is retained": "android.permission.INTERNET" in manifest,
     "Android location permission is declared": "android.permission.ACCESS_FINE_LOCATION" in manifest or "android.permission.ACCESS_COARSE_LOCATION" in manifest,
