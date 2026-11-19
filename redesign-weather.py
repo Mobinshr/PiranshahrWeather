@@ -9,11 +9,13 @@ if not target.parent.is_dir():
 page = source.read_text(encoding="utf-8")
 required = [
     'lang="fa"',
-    'countryCode=IR',
+    'SYSTEM_LANGS',
     'navigator.geolocation.getCurrentPosition',
     'https://api.open-meteo.com/v1/forecast',
 ]
 missing = [item for item in required if item not in page]
+if 'countryCode=IR' in page:
+    missing.append('global city search (countryCode=IR must be absent)')
 if missing:
     raise SystemExit("Replacement HTML is incomplete: " + ", ".join(missing))
 target.write_text(page, encoding="utf-8")
