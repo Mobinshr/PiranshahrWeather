@@ -390,11 +390,11 @@ jobs:
           import tempfile
 
           html = Path("app/src/main/assets/weather.html").read_text(encoding="utf-8")
-          scripts = re.findall(r"<script\\b[^>]*>(.*?)</script\\s*>", html, flags=re.IGNORECASE | re.DOTALL)
+          scripts = re.findall(r"<script\b[^>]*>(.*?)</script\s*>", html, flags=re.IGNORECASE | re.DOTALL)
           if not scripts:
               raise SystemExit("No inline JavaScript was found in weather.html")
           with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8") as js:
-              js.write("\\n;\\n".join(scripts))
+              js.write("\n;\n".join(scripts))
               js.flush()
               subprocess.run(["node", "--check", js.name], check=True)
           print(f"JavaScript syntax validation passed ({len(scripts)} inline script block(s)).")
